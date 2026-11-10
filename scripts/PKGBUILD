@@ -1,0 +1,48 @@
+# Maintainer: funstorm15 <funstorm15@users.noreply.github.com>
+# AUR package "survive85": builds from the release source tarball.
+pkgname=survive85
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Turn-based terminal roguelike: live from 18 to 85 on real hazard ratios (RU/EN)"
+arch=('x86_64' 'aarch64' 'armv7h')
+url="https://github.com/funstorm15/survive85"
+license=('MIT' 'CC-BY-4.0')
+depends=('glibc')
+makedepends=('go')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+# The release workflow fills this in for each tag (updpkgsums); SKIP keeps
+# `makepkg --printsrcinfo` usable before the first release exists.
+sha256sums=('SKIP')
+
+prepare() {
+	cd "$pkgname-$pkgver"
+	export GOPATH="$srcdir/gopath"
+	go mod download
+}
+
+build() {
+	cd "$pkgname-$pkgver"
+	export GOPATH="$srcdir/gopath"
+	export CGO_CPPFLAGS="${CPPFLAGS}"
+	export CGO_CFLAGS="${CFLAGS}"
+	export CGO_CXXFLAGS="${CXXFLAGS}"
+	export CGO_LDFLAGS="${LDFLAGS}"
+	export GOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw"
+	go build -ldflags "-linkmode=external -X main.version=$pkgver -X main.commit=aur -X main.date=$(date -u +%Y-%m-%d)" \
+		-o "$pkgname" ./cmd/survive85
+}
+
+check() {
+	cd "$pkgname-$pkgver"
+	export GOPATH="$srcdir/gopath"
+	go test ./...
+}
+
+package() {
+	cd "$pkgname-$pkgver"
+	install -Dm755 "$pkgname" "$pkgdir/usr/bin/$pkgname"
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 data/LICENSE.md "$pkgdir/usr/share/licenses/$pkgname/DATA-LICENSE.md"
+	install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+	install -Dm644 README.ru.md "$pkgdir/usr/share/doc/$pkgname/README.ru.md"
+}

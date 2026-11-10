@@ -1,0 +1,736 @@
+# Mind, body image, relationships, travel: chapters 29 (after a major blow),
+# 22 (how to relax), 28 (looks), 6 (the anti-list), 10 (relationships) and 21
+# (travel abroad).
+
+- id: ch29_bereavement
+  title: {ru: "Похороны", en: "The funeral"}
+  min_age: 35
+  max_age: 84
+  category: family
+  evidence: ch29_i1
+  narrative:
+    ru: |
+      Умер близкий человек. Вы третий день не спите, ничего не едите и забыли про свои таблетки
+      от давления. Хочется запереться и никого не видеть.
+    en: |
+      Someone close to you has died. For three days you haven't slept or eaten and you've
+      forgotten your blood-pressure pills. You want to lock the door and see no one.
+  choices:
+    - id: together
+      text: {ru: "Пожить у родных, пить свои лекарства, не оставаться одному", en: "Stay with family, keep taking your medicine, don't be alone"}
+      tag: wise
+      delta_sanity: -12
+      evidence: ch29_i1
+      outcome:
+        ru: "Тяжёлые недели прошли рядом с людьми. В первый день после утраты риск инфаркта в 21 раз выше обычного."
+        en: "The hard weeks passed among people. On the day after a loss the risk of a heart attack is 21 times the usual."
+    - id: alone
+      text: {ru: "Запереться дома одному", en: "Lock yourself in alone"}
+      tag: risky
+      delta_sanity: -22
+      stat_effects: {cardiovascular_risk: {factor: 2.2, years: 1}} # IRR 2.20 for heart attack or stroke in the 30 days after losing a spouse
+      evidence: ch29_i1
+      outcome:
+        ru: "Месяц тишины. Доля инфарктов и инсультов в первые 30 дней после смерти супруга примерно удваивается."
+        en: "A month of silence. Heart attacks and strokes roughly double in the 30 days after losing a spouse."
+      death_reasons:
+        cardiovascular: {ru: "Инфаркт в первые недели после утраты близкого", en: "A heart attack in the first weeks after a bereavement"}
+
+- id: ch29_grief_stuck
+  title: {ru: "Полгода спустя", en: "Six months later"}
+  min_age: 25
+  max_age: 84
+  category: mind
+  weight: 2
+  evidence: ch29_i8
+  requires: {max_sanity: 35}
+  narrative:
+    ru: |
+      Прошло больше полугода, а вы по-прежнему не можете ходить на работу, всё кажется
+      бессмысленным. Знакомые говорят: «Соберись, время лечит».
+    en: |
+      More than six months have passed and you still can't go to work; nothing seems to have a
+      point. People say: "Pull yourself together, time heals."
+  choices:
+    - id: therapy
+      text: {ru: "Пойти к психиатру за терапией затяжного горя", en: "See a psychiatrist for prolonged-grief therapy"}
+      tag: wise
+      cost_money: 40000
+      cost_will: 2
+      delta_sanity: 28
+      evidence: ch29_i8
+      outcome:
+        ru: "Это не слабость, это диагноз с лечением. Специальная терапия помогает в 51% случаев, обычная — в 28%."
+        en: "It isn't weakness; it's a diagnosis with a treatment. Targeted therapy helps in 51% of cases, ordinary therapy in 28%."
+    - id: wait
+      text: {ru: "Ждать, пока «само пройдёт»", en: "Wait for it to \"pass on its own\""}
+      tag: risky
+      delta_sanity: -6
+      evidence: ch29_i8
+      outcome:
+        ru: "Примерно каждый десятый скорбящий застревает надолго. Время одно не лечит."
+        en: "About one bereaved adult in ten gets stuck. Time alone doesn't heal."
+
+- id: ch29_big_decision
+  title: {ru: "Продать квартиру сейчас", en: "Sell the flat now"}
+  min_age: 25
+  max_age: 84
+  category: money
+  evidence: ch29_i12
+  requires: {max_sanity: 40, min_wealth: 300000}
+  narrative:
+    ru: |
+      После тяжёлого года хочется всё бросить и начать заново. Риелтор предлагает «быстрого
+      покупателя» на квартиру — на 20% ниже рынка, деньги завтра.
+    en: |
+      After a terrible year you want to drop everything and start over. An estate agent offers a
+      "quick buyer" for your flat — 20% below market, cash tomorrow.
+  choices:
+    - id: sell
+      text: {ru: "Продать и уехать", en: "Sell and leave"}
+      tag: risky
+      delta_wealth: -500000
+      delta_sanity: 4
+      evidence: ch29_i12
+      outcome:
+        ru: "Через три месяца стало легче — и очень жаль. В печали люди соглашаются на 10–30% меньше, лишь бы не ждать."
+        en: "Three months later you felt better — and very sorry. Sad people accept 10–30% less just to avoid waiting."
+    - id: wait
+      text: {ru: "Отложить все крупные решения на три месяца", en: "Postpone every big decision for three months"}
+      tag: wise
+      cost_will: 2
+      evidence: ch29_i12
+      outcome:
+        ru: "Через три месяца вы передумали продавать."
+        en: "Three months later you no longer wanted to sell."
+
+- id: ch29_debt_and_death
+  title: {ru: "«Страховка покроет долги»", en: "\"The insurance will cover the debts\""}
+  min_age: 20
+  max_age: 70
+  category: mind
+  weight: 3
+  evidence: ch29_i13
+  requires: {max_wealth: -500000, max_sanity: 30}
+  narrative:
+    ru: |
+      Долги давно перевалили за полмиллиона. Ночью приходит мысль: «Год назад я оформил
+      страхование жизни. Если меня не станет, семья расплатится».
+    en: |
+      Your debts passed half a million long ago. At night a thought comes: "I took out life
+      insurance a year ago. If I'm gone, the family can pay it off."
+  choices:
+    - id: help
+      text: {ru: "Рассказать семье и позвонить на линию помощи", en: "Tell your family and call a helpline"}
+      tag: wise
+      cost_will: 3
+      delta_sanity: 25
+      evidence: ch29_i13
+      outcome:
+        ru: "Самоубийство в первые 2 года договора страховка не оплачивает, а долги взыщут из наследства. Семья выбрала вас, а не деньги."
+        en: "Life insurance doesn't pay for suicide in the first two years, and debts come out of the estate first. Your family chose you over the money."
+    - id: alone
+      text: {ru: "Молчать", en: "Stay silent"}
+      tag: risky
+      instant_death_check:
+        chance: 0.05 # game approximation
+        cause: self_harm
+        death_reason: {ru: "Самоубийство из-за долгов. Страховка не заплатила", en: "Suicide over debts. The insurance didn't pay"}
+        evidence: ch29_i13
+      delta_sanity: -10
+      evidence: ch29_i13
+      outcome:
+        ru: "Ночь прошла. Мысль осталась."
+        en: "The night passed. The thought stayed."
+
+- id: ch22_low_mood
+  title: {ru: "Серая неделя", en: "A grey week"}
+  min_age: 18
+  max_age: 84
+  category: mind
+  weight: 1.5
+  repeatable: true
+  cooldown: 4
+  evidence: ch22_i6
+  requires: {max_sanity: 45}
+  narrative:
+    ru: |
+      Неделю всё серое. Вечерами вы лежите и листаете ленту до двух ночи, а утром не хочется
+      вставать.
+    en: |
+      For a week everything has been grey. In the evenings you lie scrolling until 2 a.m. and in
+      the morning you don't want to get up.
+  choices:
+    - id: walk
+      text: {ru: "Каждый день быстрым шагом или лёгкой пробежкой 30 минут", en: "A brisk walk or light jog, 30 minutes a day"}
+      tag: wise
+      cost_will: 2
+      delta_sanity: 15
+      delta_health: 2
+      evidence: ch22_i6
+      outcome:
+        ru: "При депрессии быстрая ходьба и бег дают самое заметное улучшение. Двигаться лучше, чем не двигаться."
+        en: "For depression, brisk walking and jogging show the clearest improvement. Moving beats not moving."
+    - id: scroll
+      text: {ru: "Ещё полистать — это же отдых", en: "Keep scrolling — that's rest, isn't it"}
+      tag: risky
+      delta_sanity: -6
+      evidence: ch22_i6
+      outcome:
+        ru: "Лента бесконечна. Неделя превратилась в месяц."
+        en: "The feed is endless. The week became a month."
+
+- id: ch22_friends
+  title: {ru: "Чат друзей молчит", en: "The friends' chat is silent"}
+  min_age: 30
+  max_age: 84
+  category: family
+  evidence: ch22_i9
+  requires: {not_conditions: [isolated]}
+  narrative:
+    ru: |
+      Друзья по институту зовут на встречу раз в месяц. Вы трижды отказались — работа, дети,
+      усталость. Скоро звать перестанут.
+    en: |
+      University friends invite you to a monthly get-together. You've said no three times —
+      work, kids, tiredness. Soon they'll stop asking.
+  choices:
+    - id: go
+      text: {ru: "Ходить на встречи регулярно, даже уставшим", en: "Go regularly, even when tired"}
+      tag: wise
+      cost_will: 1
+      cost_money: 18000
+      delta_sanity: 10
+      evidence: ch22_i9
+      outcome:
+        ru: "Регулярное общение — тоже статья расходов на здоровье. Не ждите, пока станет плохо."
+        en: "Regular social contact is a health expense too. Don't wait until you feel bad."
+    - id: drop
+      text: {ru: "Не до них сейчас", en: "No time for them now"}
+      tag: risky
+      add_conditions: [isolated]
+      evidence: ch22_i9
+      outcome:
+        ru: "Звать перестали. При социальной изоляции риск смерти примерно на 30% выше."
+        en: "They stopped asking. Social isolation means about 30% higher risk of death."
+
+- id: ch22_reconnect
+  title: {ru: "Сообщение от старого друга", en: "A message from an old friend"}
+  min_age: 30
+  max_age: 84
+  category: family
+  weight: 1.5
+  evidence: ch22_i9
+  requires: {conditions: [isolated]}
+  narrative:
+    ru: |
+      Спустя годы пишет старый друг: «Я в твоём городе на выходных. Посидим?»
+    en: |
+      After years, an old friend writes: "I'm in your city this weekend. Shall we meet?"
+  choices:
+    - id: meet
+      text: {ru: "Встретиться и договориться видеться чаще", en: "Meet up and agree to see each other more often"}
+      tag: wise
+      cost_will: 1
+      remove_conditions: [isolated]
+      delta_sanity: 12
+      evidence: ch22_i9
+      outcome:
+        ru: "Проговорили до трёх ночи. Теперь созваниваетесь по воскресеньям."
+        en: "You talked until 3 a.m. Now you call each other every Sunday."
+    - id: excuse
+      text: {ru: "Сослаться на занятость", en: "Say you're busy"}
+      tag: risky
+      delta_sanity: -4
+      evidence: ch22_i9
+      outcome:
+        ru: "Он больше не писал."
+        en: "He didn't write again."
+
+- id: ch22_spiked
+  title: {ru: "Электронка от незнакомца", en: "A vape from a stranger"}
+  min_age: 18
+  max_age: 35
+  category: legal
+  evidence: ch22_i4
+  narrative:
+    ru: |
+      В баре дружелюбный парень протягивает «особую» электронку: «Попробуй, такой вкус ты не
+      пробовал». Ваш коктейль стоит на стойке, пока вы танцевали.
+    en: |
+      At a bar a friendly guy offers you a "special" vape: "Try it, you've never had a flavour
+      like this." Your cocktail sat on the counter while you were dancing.
+  choices:
+    - id: try
+      text: {ru: "Затянуться и допить коктейль", en: "Take a puff and finish the cocktail"}
+      tag: risky
+      delta_health: -15
+      stat_effects: {legal_prison_risk: {factor: 1.5, years: 2}}
+      instant_death_check:
+        chance: 0.005 # game approximation; synthetic cannabinoids hidden in vapes (ch22_i4)
+        cause: liver
+        death_reason: {ru: "Отравление синтетическим каннабиноидом из «особой» электронки", en: "Poisoning by a synthetic cannabinoid in a \"special\" vape"}
+        evidence: ch22_i4
+      evidence: ch22_i4
+      outcome:
+        ru: "Очнулись в такси без телефона. Синтетические каннабиноиды в электронке выглядят как обычный вейп."
+        en: "You came to in a taxi without your phone. Synthetic cannabinoids in a vape look just like a normal one."
+    - id: refuse
+      text: {ru: "Отказаться и заказать новый напиток", en: "Refuse and order a fresh drink"}
+      tag: wise
+      cost_money: 700
+      evidence: ch22_i4
+      outcome:
+        ru: "Не ешьте угощения от незнакомцев и не пейте напиток, который оставался без присмотра."
+        en: "Don't take sweets from strangers and don't drink anything that left your sight."
+
+- id: ch22_ski
+  title: {ru: "Горнолыжный курорт", en: "The ski resort"}
+  min_age: 18
+  max_age: 65
+  category: travel
+  evidence: ch22_i12
+  narrative:
+    ru: |
+      Первый раз на сноуборде. Прокат шлема стоит 800 в день, и в нём «жарко и некрасиво».
+      Инструктор катается в шапке.
+    en: |
+      Your first time on a snowboard. Renting a helmet costs 800 a day, and it's "hot and ugly".
+      The instructor rides in a beanie.
+  choices:
+    - id: helmet
+      text: {ru: "Взять шлем", en: "Rent the helmet"}
+      tag: wise
+      cost_money: 4000
+      catastrophe_check:
+        chance: 0.025 # game approximation; OR 0.65 for head injury with a helmet (ch22_i12)
+        kind: injury
+        delta_health: -10
+        text: {ru: "Упали на голову — шлем треснул, вы отделались синяком.", en: "You landed on your head — the helmet cracked, you got off with a bruise."}
+        evidence: ch22_i12
+      evidence: ch22_i12
+      outcome:
+        ru: "Со шлемом шанс травмы головы при падении примерно на треть ниже."
+        en: "With a helmet the chance of a head injury in a fall is about a third lower."
+    - id: beanie
+      text: {ru: "Кататься в шапке, как инструктор", en: "Ride in a beanie like the instructor"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.0385 # game approximation: 0.025 / 0.65
+        kind: injury
+        delta_health: -30
+        text: {ru: "Сотрясение мозга на второй день. Остаток отпуска — в местной больнице.", en: "A concussion on day two. The rest of the holiday in the local hospital."}
+        evidence: ch22_i12
+      evidence: ch22_i12
+      outcome:
+        ru: "Повезло: падали только на пятую точку."
+        en: "Lucky: you only ever landed on your backside."
+
+- id: ch28_steroids
+  title: {ru: "«Курс» от тренера", en: "The trainer's \"cycle\""}
+  min_age: 18
+  max_age: 40
+  category: health
+  evidence: ch28_i5
+  requires: {not_conditions: [steroid_user]}
+  narrative:
+    ru: |
+      Год в зале, а рельефа нет. Тренер шёпотом предлагает «лёгкий курс» — уколы и таблетки,
+      «все профи так делают, побочек не будет».
+    en: |
+      A year at the gym and still no definition. The trainer whispers about a "light cycle" —
+      injections and pills, "all the pros do it, no side effects".
+  choices:
+    - id: inject
+      text: {ru: "Попробовать один курс", en: "Try one cycle"}
+      tag: risky
+      cost_money: 30000
+      add_conditions: [steroid_user]
+      delta_sanity: 6
+      evidence: ch28_i5
+      outcome:
+        ru: "Мышцы растут как на дрожжах. У мужчин с положительным тестом в зале риск смерти втрое выше ровесников."
+        en: "Muscle grows like magic. Men who test positive at the gym have three times the risk of death of their peers."
+    - id: natural
+      text: {ru: "Тренироваться без химии и поменять тренера", en: "Train clean and change trainers"}
+      tag: wise
+      cost_will: 2
+      add_conditions: [strength_training]
+      evidence: ch28_i5
+      outcome:
+        ru: "Медленнее, но без угрей, гинекомастии и проблем с эрекцией — каждая встречается минимум у 1 из 10 пользователей."
+        en: "Slower, but without acne, breast growth or erection problems — each hits at least 1 in 10 users."
+
+- id: ch28_stop_steroids
+  title: {ru: "Сердце колотится", en: "A pounding heart"}
+  min_age: 19
+  max_age: 50
+  category: health
+  weight: 2
+  repeatable: true
+  cooldown: 3
+  evidence: ch28_i5
+  requires: {conditions: [steroid_user]}
+  narrative:
+    ru: |
+      Давление 150, сердце колотится по ночам, анализы печени «как у алкоголика», хотя вы не
+      пьёте. Тренер говорит: «Это нормально на курсе».
+    en: |
+      Blood pressure 150, a heart that pounds at night, liver tests "like an alcoholic's" though
+      you don't drink. The trainer says: "That's normal on a cycle."
+  choices:
+    - id: stop
+      text: {ru: "Прекратить и пойти к эндокринологу", en: "Stop and see an endocrinologist"}
+      tag: wise
+      cost_will: 3
+      cost_money: 8000
+      remove_conditions: [steroid_user]
+      delta_sanity: -6
+      evidence: ch28_i5
+      outcome:
+        ru: "Полгода восстановления гормонов. Сердце успокоилось."
+        en: "Six months of hormonal recovery. Your heart calmed down."
+    - id: continue
+      text: {ru: "Ещё один курс — до соревнований", en: "One more cycle — until the competition"}
+      tag: risky
+      delta_health: -6
+      evidence: ch28_i5
+      outcome:
+        ru: "Соревнования прошли. Курсы — нет."
+        en: "The competition passed. The cycles didn't."
+
+- id: ch28_diet_pills
+  title: {ru: "Кофе для похудения", en: "Slimming coffee"}
+  min_age: 18
+  max_age: 60
+  category: health
+  evidence: ch28_i4
+  narrative:
+    ru: |
+      Блогер с миллионом подписчиков рекламирует «кофе для похудения»: минус 8 кг за месяц без
+      диет. По промокоду — скидка 50%.
+    en: |
+      A blogger with a million followers promotes "slimming coffee": minus 8 kg a month without
+      dieting. Fifty per cent off with a promo code.
+  choices:
+    - id: buy
+      text: {ru: "Заказать курс на три месяца", en: "Order a three-month supply"}
+      tag: risky
+      cost_money: 9000
+      delta_health: -5
+      # sibutramine found in such products: HR 1.28 non-fatal heart attack,
+      # HR 1.36 stroke; applied for the time it is taken and shortly after
+      stat_effects: {cardiovascular_risk: {factor: 1.3, years: 2}}
+      evidence: ch28_i4
+      outcome:
+        ru: "Минус 3 кг, плюс бессонница и сердцебиение. В таких продуктах часто находят запрещённый сибутрамин."
+        en: "Three kilos down, plus insomnia and palpitations. Such products often contain banned sibutramine."
+    - id: skip
+      text: {ru: "Пролистать", en: "Scroll past"}
+      tag: wise
+      evidence: ch28_i4
+      outcome:
+        ru: "Когда проверка находит сибутрамин, люди его уже выпили."
+        en: "By the time testing finds sibutramine, people have already swallowed it."
+
+- id: ch28_starving
+  title: {ru: "Платье на выпускной", en: "The dress for the party"}
+  min_age: 18
+  max_age: 30
+  category: health
+  evidence: ch28_i1
+  narrative:
+    ru: |
+      До важного торжества месяц, и вы решили «влезть в размер». Подруга делится лайфхаком:
+      почти не есть, а если сорвёшься — вызвать рвоту.
+    en: |
+      A big celebration is a month away and you've decided to "fit the size". A friend shares
+      a tip: barely eat, and if you slip up, make yourself throw up.
+  choices:
+    - id: starve
+      text: {ru: "Сесть на 600 калорий и «лайфхак»", en: "Go to 600 calories plus the \"tip\""}
+      tag: risky
+      delta_health: -15
+      delta_sanity: -18
+      evidence: ch28_i1
+      outcome:
+        ru: "Влезли. Но мысль о еде теперь не отпускает. При нервной анорексии смертность в 5,9 раза выше, чем у ровесников."
+        en: "You fit. But you can't stop thinking about food now. Anorexia nervosa carries 5.9 times the mortality of peers."
+    - id: normal
+      text: {ru: "Купить платье своего размера", en: "Buy a dress in your actual size"}
+      tag: wise
+      cost_money: 7000
+      delta_sanity: 3
+      evidence: ch28_i1
+      outcome:
+        ru: "Вам идёт. Девочки на жёсткой диете в 18 раз чаще заболевают расстройством пищевого поведения."
+        en: "It suits you. Girls on severe diets develop eating disorders eighteen times as often."
+
+- id: ch06_supplements
+  title: {ru: "Презентация БАДов", en: "A supplements presentation"}
+  min_age: 35
+  max_age: 84
+  category: money
+  evidence: ch06_i10
+  narrative:
+    ru: |
+      На бесплатной «лекции о долголетии» ведущий в белом халате продаёт комплекс витаминов,
+      рыбьего жира и «эликсир для сосудов» — курс на год за 60 000.
+    en: |
+      At a free "longevity lecture", a presenter in a white coat sells a bundle of vitamins, fish
+      oil and a "vascular elixir" — a year's course for 60,000.
+  choices:
+    - id: buy
+      text: {ru: "Купить курс: здоровье дороже", en: "Buy the course: health comes first"}
+      tag: risky
+      cost_money: 60000
+      delta_sanity: 3
+      evidence: ch06_i1
+      outcome:
+        ru: "14 400 врачей пили поливитамины 11 лет — ни меньше инфарктов, ни меньше смертей. Минус 60 000."
+        en: "14,400 doctors took multivitamins for 11 years: no fewer heart attacks, no fewer deaths. Minus 60,000."
+    - id: leave
+      text: {ru: "Уйти с чаем и печеньем", en: "Leave with the free tea and biscuits"}
+      tag: wise
+      evidence: ch06_i10
+      outcome:
+        ru: "«БАД не является лекарством» — эту фразу на упаковке требует регулятор."
+        en: "\"A dietary supplement is not a medicine\" — the regulator requires that line on the pack."
+
+- id: ch06_pet_ct
+  title: {ru: "Сканирование всего тела", en: "A full-body scan"}
+  min_age: 40
+  max_age: 75
+  category: health
+  evidence: ch06_i7
+  narrative:
+    ru: |
+      Частная клиника предлагает «чекап на рак»: ПЭТ-КТ всего тела и онкомаркеры за 90 000.
+      «Узнайте о болезни раньше, чем она о вас».
+    en: |
+      A private clinic offers a "cancer check-up": a full-body PET-CT and tumour markers for
+      90,000. "Find the disease before it finds you."
+  choices:
+    - id: scan
+      text: {ru: "Пройти — для спокойствия", en: "Do it — for peace of mind"}
+      tag: risky
+      cost_money: 90000
+      catastrophe_check:
+        chance: 0.4 # nearly four in ten are called back after a whole-body CT (ch06_i7)
+        kind: injury
+        delta_health: -8
+        delta_sanity: -15
+        text:
+          ru: "«Подозрительное образование». Три месяца дообследований и биопсия — доброкачественное."
+          en: "\"A suspicious lesion\". Three months of follow-ups and a biopsy — benign."
+        evidence: ch06_i7
+      evidence: ch06_i7
+      outcome:
+        ru: "У восьми из десяти находят хоть одно «отклонение», почти большинство — безобидные."
+        en: "Eight in ten get at least one \"abnormality\" noted; most are harmless."
+    - id: proven
+      text: {ru: "Сделать только скрининги с доказанной пользой", en: "Do only screenings with proven benefit"}
+      tag: wise
+      cost_money: 3000
+      stat_effects: {oncology_risk: 0.975} # colorectal screening, RR 0.75 for its cancer death (ch01_i19)
+      evidence: ch01_i19
+      outcome:
+        ru: "Анализ на скрытую кровь, давление, сахар. Дёшево и по делу."
+        en: "A stool blood test, blood pressure, glucose. Cheap and to the point."
+
+- id: ch06_willpower_course
+  title: {ru: "Курс «Сила воли»", en: "The \"Willpower\" course"}
+  min_age: 18
+  max_age: 50
+  category: money
+  evidence: ch06_i25
+  narrative:
+    ru: |
+      Коуч обещает научить «экономить силу воли»: «Воля — как мышца, она кончается. Мой метод
+      поможет её накопить». Курс стоит 45 000.
+    en: |
+      A coach promises to teach you to "conserve willpower": "Willpower is like a muscle, it runs
+      out. My method helps you store it up." The course costs 45,000.
+  choices:
+    - id: buy
+      text: {ru: "Купить курс", en: "Buy the course"}
+      tag: risky
+      cost_money: 45000
+      evidence: ch06_i25
+      outcome:
+        ru: "23 лаборатории и 2141 участник повторили знаменитый эксперимент — эффект «истощения воли» почти нулевой."
+        en: "Twenty-three labs and 2,141 participants repeated the famous experiment — the \"ego depletion\" effect was almost zero."
+    - id: skip
+      text: {ru: "Не покупать и просто начать", en: "Skip it and simply start"}
+      tag: wise
+      delta_will: 2
+      evidence: ch06_i25
+      outcome:
+        ru: "Перестаньте объяснять себе «воля сегодня кончилась». Вы почувствовали себя собраннее."
+        en: "Stop telling yourself \"my willpower ran out today\". You felt more focused already."
+
+- id: ch10_marriage
+  title: {ru: "Предложение", en: "The proposal"}
+  min_age: 22
+  max_age: 45
+  category: family
+  evidence: ch10_i8
+  requires: {not_conditions: [married]}
+  narrative:
+    ru: |
+      Вы вместе четыре года. Вечером на набережной партнёр достаёт кольцо. Родители давно
+      спрашивают, «когда уже».
+    en: |
+      You've been together four years. One evening on the embankment your partner pulls out a
+      ring. Your parents have been asking "when?" for ages.
+  choices:
+    - id: yes
+      text: {ru: "Да!", en: "Yes!"}
+      tag: neutral
+      cost_money: 150000
+      delta_sanity: 12
+      add_conditions: [married]
+      set_flags: [married]
+      evidence: ch10_i8
+      outcome:
+        ru: "Свадьба без кредита. Женатые умирают примерно на 12% реже, но это корреляция, а не доказанная причина."
+        en: "A wedding without a loan. Married people die about 12% less often, but that's correlation, not proven cause."
+    - id: not_yet
+      text: {ru: "«Давай ещё подождём»", en: "\"Let's wait a little longer\""}
+      tag: neutral
+      delta_sanity: -6
+      outcome:
+        ru: "Кольцо вернулось в коробочку. Вы остались вместе — пока."
+        en: "The ring went back into its box. You're still together — for now."
+
+- id: ch10_fights
+  title: {ru: "Холодная война на кухне", en: "A cold war in the kitchen"}
+  min_age: 25
+  max_age: 70
+  category: family
+  evidence: ch10_i20
+  requires: {conditions: [married], flag_years: {married: 3}}
+  narrative:
+    ru: |
+      Ссоры по кругу: деньги, посуда, свекровь. Неделями вы разговариваете только сообщениями.
+      Друг советует семейного психолога.
+    en: |
+      The same fights on repeat: money, dishes, in-laws. For weeks you talk only by text. A
+      friend suggests couples therapy.
+  choices:
+    - id: therapy
+      text: {ru: "Пойти к семейному психологу вдвоём", en: "Go to couples therapy together"}
+      tag: wise
+      cost_money: 60000
+      cost_will: 2
+      delta_sanity: 15
+      evidence: ch10_i20
+      outcome:
+        ru: "Примерно семь пар из десяти после терапии довольны отношениями заметно больше."
+        en: "About seven couples in ten are clearly more satisfied after therapy."
+    - id: wait
+      text: {ru: "Само рассосётся", en: "It'll sort itself out"}
+      tag: risky
+      delta_sanity: -12
+      catastrophe_check:
+        chance: 0.15 # game approximation
+        kind: ruin
+        wealth_fraction: 0.5
+        delta_sanity: -15
+        remove_conditions: [married]
+        text:
+          ru: "Развод. Раздел имущества, суды, полгода на диване у друга."
+          en: "Divorce. Splitting the property, court dates, six months on a friend's sofa."
+        evidence: ch10_i20
+      evidence: ch10_i20
+      outcome:
+        ru: "Пары, которые просто ждут очереди к психологу, почти не меняются."
+        en: "Couples who just sit on the waiting list barely change."
+
+- id: ch21_insurance
+  title: {ru: "Страховка в путешествие", en: "Travel insurance"}
+  min_age: 20
+  max_age: 80
+  category: travel
+  evidence: ch21_i4
+  narrative:
+    ru: |
+      Отпуск в горах за границей. Страховка с медэвакуацией стоит 4000, «только задержка рейса»
+      — 600. Вы же никогда не болеете.
+    en: |
+      A mountain holiday abroad. Insurance with medical evacuation costs 4,000; "flight delay
+      only" costs 600. You never get sick anyway.
+  choices:
+    - id: full
+      text: {ru: "Взять страховку с лечением и медэвакуацией", en: "Buy cover for medical care and evacuation"}
+      tag: wise
+      cost_money: 4000
+      catastrophe_check:
+        chance: 0.01 # game approximation
+        kind: injury
+        delta_health: -20
+        text: {ru: "Перелом на треке. Страховая оплатила всё, включая перелёт домой.", en: "A fracture on the trail. The insurer paid for everything, flight home included."}
+        evidence: ch21_i4
+      evidence: ch21_i4
+      outcome:
+        ru: "Отпуск прошёл спокойно. Разоряет не поход к врачу, а госпитализация и вывоз домой."
+        en: "A quiet holiday. What ruins families isn't a doctor's visit but a hospital stay and the flight home."
+    - id: cheap
+      text: {ru: "Взять дешёвую — только задержку рейса", en: "Buy the cheap one — flight delay only"}
+      tag: risky
+      cost_money: 600
+      catastrophe_check:
+        chance: 0.01 # game approximation
+        kind: ruin
+        delta_health: -20
+        delta_wealth: -1800000
+        delta_sanity: -20
+        text:
+          ru: "Перелом на треке, операция за границей и санитарный рейс домой — за ваш счёт."
+          en: "A fracture on the trail, surgery abroad and an air ambulance home — all at your own expense."
+        evidence: ch21_i4
+      evidence: ch21_i4
+      outcome:
+        ru: "Повезло. Медицинские счета за границей оплачиваете вы сами."
+        en: "Lucky. Medical bills abroad come out of your own pocket."
+
+- id: ch21_job_abroad
+  title: {ru: "Работа мечты за границей", en: "A dream job abroad"}
+  min_age: 18
+  max_age: 35
+  category: travel
+  evidence: ch21_i5
+  narrative:
+    ru: |
+      В сообщениях предлагают работу «оператором» в Юго-Восточной Азии: 4000 долларов в месяц,
+      опыт не нужен, билет оплатят. Сначала нужно приехать в приграничный город, паспорт
+      «подержат у себя для оформления».
+    en: |
+      A message offers an "operator" job in Southeast Asia: $4,000 a month, no experience
+      needed, ticket paid. First you gather in a border town, and they'll "hold your passport
+      for the paperwork".
+  choices:
+    - id: go
+      text: {ru: "Ехать: такой шанс раз в жизни", en: "Go: a once-in-a-lifetime chance"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.85 # treat every "high-paying job overseas" as a scam (ch21_i5)
+        kind: prison
+        years: 2
+        delta_health: -15
+        delta_sanity: -30
+        text:
+          ru: "Колл-центр мошенников за колючей проволокой. Паспорт не у вас. Когда вы вернётесь, вас могут ещё и привлечь."
+          en: "A scam call centre behind barbed wire. They have your passport. When you get back, you may face charges too."
+        evidence: ch21_i5
+      evidence: ch21_i5
+      outcome:
+        ru: "Вас остановили на границе: документы оказались поддельными. Повезло."
+        en: "Border guards stopped you: the papers were fake. Lucky."
+    - id: decline
+      text: {ru: "Удалить сообщение", en: "Delete the message"}
+      tag: wise
+      evidence: ch21_i5
+      outcome:
+        ru: "Огромная зарплата, никаких требований, паспорт «на хранение» — классическая схема."
+        en: "Huge pay, no requirements, a passport \"held for you\" — the classic scheme."

@@ -1,0 +1,40 @@
+# Display names and generic death reasons per cause group. A reason from a
+# decisive risk factor (a choice or a condition) takes precedence.
+cardiovascular:
+  name: {ru: "Сердечно-сосудистые заболевания", en: "Cardiovascular disease"}
+  reasons:
+    - {ru: "Острый инфаркт миокарда", en: "Acute myocardial infarction"}
+    - {ru: "Ишемический инсульт", en: "Ischaemic stroke"}
+    - {ru: "Внезапная сердечная смерть", en: "Sudden cardiac death"}
+    - {ru: "Хроническая сердечная недостаточность", en: "Chronic heart failure"}
+oncology:
+  name: {ru: "Онкология", en: "Cancer"}
+  reasons:
+    - {ru: "Колоректальный рак с метастазами", en: "Metastatic colorectal cancer"}
+    - {ru: "Рак лёгкого", en: "Lung cancer"}
+    - {ru: "Рак желудка", en: "Stomach cancer"}
+    - {ru: "Рак поджелудочной железы", en: "Pancreatic cancer"}
+liver:
+  name: {ru: "Печень, токсины и пищеварение", en: "Liver, toxins and digestion"}
+  reasons:
+    - {ru: "Декомпенсированный цирроз печени", en: "Decompensated liver cirrhosis"}
+    - {ru: "Острое отравление", en: "Acute poisoning"}
+    - {ru: "Желудочно-кишечное кровотечение", en: "Gastrointestinal bleeding"}
+trauma:
+  name: {ru: "Травмы и несчастные случаи", en: "Injuries and accidents"}
+  reasons:
+    - {ru: "Сочетанная травма в ДТП", en: "Multiple injuries in a road crash"}
+    - {ru: "Падение с высоты", en: "Fall from height"}
+    - {ru: "Утопление", en: "Drowning"}
+    - {ru: "Ожоги и отравление дымом при пожаре", en: "Burns and smoke inhalation in a fire"}
+self_harm:
+  name: {ru: "Суицид", en: "Suicide"}
+  reasons:
+    - {ru: "Самоубийство на фоне неразрешённого кризиса", en: "Suicide during an untreated crisis"}
+other:
+  name: {ru: "Прочие причины", en: "Other causes"}
+  reasons:
+    - {ru: "Пневмония", en: "Pneumonia"}
+    - {ru: "Сепсис", en: "Sepsis"}
+    - {ru: "Хроническая обструктивная болезнь лёгких", en: "Chronic obstructive pulmonary disease"}
+    - {ru: "Деменция и её осложнения", en: "Dementia and its complications"}

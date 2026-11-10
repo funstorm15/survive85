@@ -1,0 +1,610 @@
+# Chapter 1 — "How to avoid premature death": roads, fire, water, screening,
+# vaccines, crises. Absolute chances of instant checks are game
+# approximations; the ratios between choices come from the cited evidence.
+
+- id: ch01_seatbelt
+  title: {ru: "Заднее сиденье", en: "The back seat"}
+  min_age: 18
+  max_age: 40
+  category: safety
+  weight: 1.5
+  evidence: ch01_i1
+  narrative:
+    ru: |
+      Ночное такси после дня рождения друга. Водитель гонит по пустому проспекту, в салоне
+      пахнет ёлочкой-ароматизатором. Ремень на заднем сиденье засунут глубоко между подушками.
+    en: |
+      A late-night taxi after a friend's birthday. The driver races down an empty avenue, the
+      car smells of a pine air freshener. The back-seat belt is buried deep between the cushions.
+  choices:
+    - id: buckle
+      text: {ru: "Выкопать ремень и пристегнуться — и делать так всегда", en: "Dig out the belt and buckle up — and always do it"}
+      tag: wise
+      cost_will: 1
+      add_conditions: [seatbelt]
+      evidence: ch01_i1
+      outcome:
+        ru: "Водитель усмехнулся в зеркало. Пусть. Вы приучили себя пристёгиваться даже сзади."
+        en: "The driver smirked in the mirror. Fine. You trained yourself to buckle up even in the back."
+    - id: skip
+      text: {ru: "Сзади же не штрафуют. Доеду так", en: "Nobody fines you in the back. I'll ride like this"}
+      tag: risky
+      add_conditions: [no_seatbelt]
+      evidence: ch01_i1
+      outcome:
+        ru: "Доехали. В этот раз. Привычка «сзади можно» осталась с вами надолго."
+        en: "You got home. This time. The \"back seat doesn't count\" habit stayed with you for years."
+      death_reasons:
+        trauma: {ru: "Вылетел через лобовое стекло с заднего сиденья", en: "Thrown through the windscreen from the back seat"}
+
+- id: ch01_motorbike
+  title: {ru: "Свой мотоцикл", en: "A bike of your own"}
+  min_age: 18
+  max_age: 45
+  category: safety
+  evidence: ch01_i2
+  requires: {min_wealth: 60000}
+  narrative:
+    ru: |
+      Пробки съедают два часа в день. Подержанный мотоцикл стоит как три месячные проездные
+      за год. Продавец кидает в придачу старый шлем с порванным ремешком.
+    en: |
+      Traffic eats two hours a day. A used motorbike costs less than a year of transit passes.
+      The seller throws in an old helmet with a torn chin strap.
+  choices:
+    - id: good_helmet
+      text: {ru: "Купить мотоцикл и нормальный шлем, всегда застёгивать ремешок", en: "Buy the bike and a proper helmet, always fasten the strap"}
+      tag: wise
+      cost_money: 60000
+      cost_will: 1
+      add_conditions: [rider_helmet]
+      set_flags: [motorbike]
+      evidence: ch01_i2
+      outcome:
+        ru: "Ремешок под подбородком щёлкает каждый раз. Шлем, который висит на руле, не считается."
+        en: "The strap clicks under your chin every time. A helmet hanging off the handlebar doesn't count."
+    - id: old_helmet
+      text: {ru: "Купить мотоцикл, а шлем… потом. Летом в нём жарко", en: "Buy the bike; the helmet can wait. It's hot in summer"}
+      tag: risky
+      cost_money: 52000
+      add_conditions: [rider_no_helmet]
+      set_flags: [motorbike]
+      evidence: ch01_i2
+      outcome:
+        ru: "Ветер в лицо, свобода. Шлем болтается на зеркале, как сувенир."
+        en: "Wind in your face, freedom. The helmet dangles from the mirror like a souvenir."
+    - id: bus
+      text: {ru: "Остаться на автобусе и слушать подкасты", en: "Stay on the bus and listen to podcasts"}
+      tag: neutral
+      delta_sanity: -3
+      outcome:
+        ru: "Ещё один год в пробках. Зато вы дослушали все сезоны любимого подкаста."
+        en: "Another year in traffic. At least you finished every season of your favourite podcast."
+
+- id: ch01_motorbike_crash
+  title: {ru: "Мокрый асфальт", en: "Wet asphalt"}
+  min_age: 18
+  max_age: 70
+  category: emergency
+  weight: 1.5
+  weight_by: {trauma_accident_risk: 1}
+  evidence: ch01_i2
+  requires: {flags: [motorbike], flag_years: {motorbike: 1}}
+  narrative:
+    ru: |
+      Дождь, вечер, такси резко перестраивается в ваш ряд. Тормозить поздно: колесо уходит
+      на разметке, и асфальт летит навстречу.
+    en: |
+      Rain, evening, a taxi cuts into your lane. Too late to brake: the wheel slides on the
+      road paint and the asphalt rushes up at you.
+  choices:
+    - id: fall_helmet
+      text: {ru: "Сгруппироваться — голова в застёгнутом шлеме", en: "Tuck and roll — head inside a strapped helmet"}
+      tag: wise
+      requires: {conditions: [rider_helmet]}
+      delta_health: -20
+      instant_death_check:
+        chance: 0.0175 # game approximation; OR 0.58 vs the unprotected choice (0.03 × 0.58)
+        cause: trauma
+        death_reason: {ru: "Сочетанная травма в мотоаварии", en: "Multiple injuries in a motorbike crash"}
+        evidence: ch01_i2
+      evidence: ch01_i2
+      outcome:
+        ru: "Сломанная ключица и расколотый шлем. Шлем можно купить новый — голову нет."
+        en: "A broken collarbone and a cracked helmet. You can buy a new helmet, not a new head."
+    - id: fall_bare
+      text: {ru: "Сгруппироваться — шлем остался на зеркале", en: "Tuck and roll — the helmet is still on the mirror"}
+      tag: risky
+      requires: {conditions: [rider_no_helmet]}
+      delta_health: -35
+      instant_death_check:
+        chance: 0.03 # game approximation
+        cause: trauma
+        death_reason: {ru: "Черепно-мозговая травма: мотоцикл без шлема", en: "Head injury: motorbike crash without a helmet"}
+        evidence: ch01_i2
+      evidence: ch01_i2
+      outcome:
+        ru: "Сотрясение, швы на голове, месяц в больнице. Шлем вы теперь видите во сне."
+        en: "A concussion, stitches in your scalp, a month in hospital. Now you dream of helmets."
+    - id: sell
+      text: {ru: "После больницы продать мотоцикл", en: "After hospital, sell the bike"}
+      tag: neutral
+      delta_health: -25
+      delta_wealth: 35000
+      remove_conditions: [rider_helmet, rider_no_helmet]
+      clear_flags: [motorbike]
+      outcome:
+        ru: "Удачно отделались. Мотоцикл ушёл первому же покупателю."
+        en: "A lucky escape. The bike went to the first buyer."
+
+- id: ch01_smoke_alarm
+  title: {ru: "Датчик дыма за 1200", en: "A 1,200-ruble smoke alarm"}
+  min_age: 20
+  max_age: 75
+  category: safety
+  evidence: ch01_i3
+  requires: {not_flags: [smoke_alarm]}
+  narrative:
+    ru: |
+      В соседнем подъезде ночью сгорела квартира: хозяин спал и не почувствовал дыма. В лифте
+      висит объявление — управляющая компания продаёт автономные датчики дыма по 1200 рублей.
+    en: |
+      A flat burnt out in the next building last night: the owner was asleep and never smelled
+      the smoke. A notice in the lift says the building manager sells smoke alarms at 1,200 rubles.
+  choices:
+    - id: install
+      text: {ru: "Купить два датчика и менять батарейки раз в год", en: "Buy two alarms and change the batteries every year"}
+      tag: wise
+      cost_money: 2400
+      set_flags: [smoke_alarm]
+      evidence: ch01_i3
+      outcome:
+        ru: "Пищит при каждой подгоревшей яичнице. Зато разбудит, если загорится по-настоящему."
+        en: "It beeps at every burnt omelette. But it will wake you if there is a real fire."
+    - id: skip
+      text: {ru: "Ерунда, я же почувствую запах", en: "Nonsense, I'd smell it"}
+      tag: risky
+      evidence: ch01_i3
+      outcome:
+        ru: "Вы сэкономили 2400 рублей. Четыре из десяти погибших при пожаре в момент возгорания спали."
+        en: "You saved 2,400 rubles. Four in ten fire victims were asleep when the fire started."
+
+- id: ch01_house_fire
+  title: {ru: "Три часа ночи, запах гари", en: "3 a.m., the smell of smoke"}
+  min_age: 20
+  max_age: 84
+  category: emergency
+  weight: 0.6
+  evidence: ch13_i24
+  narrative:
+    ru: |
+      Вы просыпаетесь в темноте. В горле першит, под дверью спальни тянется серая полоса дыма.
+      Где-то трещит проводка.
+    en: |
+      You wake in the dark. Your throat burns and a grey ribbon of smoke slides under the
+      bedroom door. Wiring crackles somewhere.
+  choices:
+    - id: alarm_crawl
+      text: {ru: "Датчик орёт. Ползком к лестнице, проверяя двери ладонью", en: "The alarm is screaming. Crawl to the stairs, testing doors by hand"}
+      tag: wise
+      requires: {flags: [smoke_alarm]}
+      delta_health: -5
+      instant_death_check:
+        chance: 0.006 # game approximation; OR 0.39 with a working alarm (0.015 × 0.39)
+        cause: trauma
+        death_reason: {ru: "Отравление продуктами горения при пожаре", en: "Smoke inhalation in a house fire"}
+        evidence: ch01_i3
+      evidence: ch13_i24
+      outcome:
+        ru: "Датчик разбудил вас минутами раньше. Вы выбрались по лестнице, пока дым ещё стоял под потолком."
+        en: "The alarm woke you minutes earlier. You got down the stairs while the smoke still hung under the ceiling."
+    - id: crawl
+      text: {ru: "Ползком к лестнице, проверяя двери ладонью", en: "Crawl to the stairs, testing doors by hand"}
+      tag: wise
+      requires: {not_flags: [smoke_alarm]}
+      delta_health: -15
+      instant_death_check:
+        chance: 0.015 # game approximation
+        cause: trauma
+        death_reason: {ru: "Отравление продуктами горения: в квартире не было датчика дыма", en: "Smoke inhalation: there was no smoke alarm in the flat"}
+        evidence: ch01_i3
+      evidence: ch13_i24
+      outcome:
+        ru: "Вы проснулись поздно, но ползли под дымом и не открыли горячую дверь. Это и спасло."
+        en: "You woke late, but you crawled under the smoke and never opened the hot door. That saved you."
+    - id: elevator
+      text: {ru: "Схватить телефон и бегом к лифту", en: "Grab the phone and run for the lift"}
+      tag: risky
+      delta_health: -20
+      instant_death_check:
+        chance: 0.045 # game approximation: lifts lose power and fill with smoke (ch13_i24)
+        scale_by: [trauma_accident_risk]
+        cause: trauma
+        death_reason: {ru: "Задохнулся в застрявшем при пожаре лифте", en: "Suffocated in a lift that stalled during a fire"}
+        evidence: ch13_i24
+      evidence: ch13_i24
+      outcome:
+        ru: "Лифт дёрнулся и встал между этажами. Пожарные вытащили вас через люк, уже без сознания."
+        en: "The lift jerked and stopped between floors. Firefighters pulled you out through the hatch, unconscious."
+
+- id: ch01_mushrooms
+  title: {ru: "Грибная поляна", en: "A clearing full of mushrooms"}
+  min_age: 18
+  max_age: 84
+  category: safety
+  evidence: ch01_i5
+  narrative:
+    ru: |
+      На даче сосед хвастается корзиной грибов: «Червивые — значит, не ядовитые, проверено!»
+      На опушке их ещё полно, и вечером обещают жарить с картошкой.
+    en: |
+      At the dacha a neighbour shows off a basket of mushrooms: "Worms eat them, so they're not
+      poisonous — proven!" The forest edge is full of them, and tonight they'll be fried with potatoes.
+  choices:
+    - id: eat
+      text: {ru: "Набрать и пожарить — сосед же разбирается", en: "Pick some and fry them — the neighbour knows his stuff"}
+      tag: risky
+      delta_health: -15
+      instant_death_check:
+        chance: 0.015 # game approximation; folk identification tricks do not work (ch01_i5)
+        cause: liver
+        death_reason: {ru: "Отравление бледной поганкой: печёночная недостаточность", en: "Death-cap poisoning: liver failure"}
+        evidence: ch01_i5
+      evidence: ch01_i5
+      outcome:
+        ru: "Ночью скрутило живот. Скорая, капельницы, три дня в токсикологии. Сосед клянётся, что грибы были «те самые»."
+        en: "At night your stomach cramped. An ambulance, drips, three days in toxicology. The neighbour swears they were \"the right ones\"."
+    - id: refuse
+      text: {ru: "Грибы — только из магазина. Народные приметы не работают", en: "Mushrooms only from a shop. Folk tricks don't work"}
+      tag: wise
+      evidence: ch01_i5
+      outcome:
+        ru: "Над вами посмеялись за ужином. Серебряная ложка, червяки и «яркий значит ядовитый» — всё это мифы."
+        en: "They laughed at you over dinner. Silver spoons, worms and \"bright means poisonous\" are all myths."
+
+- id: ch01_ebike_charging
+  title: {ru: "Электросамокат на зарядке", en: "An e-scooter on charge"}
+  min_age: 18
+  max_age: 60
+  category: safety
+  evidence: ch01_i6
+  narrative:
+    ru: |
+      Вы купили электровелосипед для подработки курьером. Оставлять его во дворе страшно —
+      украдут, а розетка в прихожей так удобна. Заряжать придётся по ночам.
+    en: |
+      You bought an e-bike for courier gigs. Leaving it in the yard means it gets stolen, and
+      the socket in the hallway is so convenient. It will have to charge overnight.
+  choices:
+    - id: hallway
+      text: {ru: "Заряжать в прихожей, у входной двери", en: "Charge it in the hallway, by the front door"}
+      tag: risky
+      delta_wealth: 40000
+      catastrophe_check:
+        chance: 0.03 # game approximation
+        kind: injury
+        delta_health: -40
+        wealth_fraction: 0.3
+        text:
+          ru: "Ночью батарея вспыхнула прямо у единственного выхода. Вы выпрыгнули со второго этажа."
+          en: "At night the battery burst into flames right by the only exit. You jumped from the second floor."
+        evidence: ch01_i6
+      evidence: ch01_i6
+      outcome:
+        ru: "Удобно. Подработка приносит деньги, а батарея каждую ночь греется у двери."
+        en: "Convenient. The gigs bring money, and every night the battery warms up next to the door."
+    - id: station
+      text: {ru: "Платить за зарядную станцию во дворе", en: "Pay for a charging station in the yard"}
+      tag: wise
+      cost_money: 6000
+      delta_wealth: 40000
+      evidence: ch01_i6
+      outcome:
+        ru: "Минус 500 в месяц. Пожар на лестнице отрезал бы единственный путь на улицу."
+        en: "Minus 500 a month. A fire on the stairs would cut off the only way out."
+
+- id: ch01_blood_pressure
+  title: {ru: "Тонометр в аптеке", en: "The pharmacy blood-pressure cuff"}
+  min_age: 35
+  max_age: 80
+  category: chronic
+  weight: 1.5
+  evidence: ch01_i7
+  requires: {not_conditions: [hypertension, hypertension_treated]}
+  narrative:
+    ru: |
+      Пока ждёте очередь в аптеке, от скуки суёте руку в автоматический тонометр. Экран мигает:
+      162/101. Голова не болит, чувствуете себя отлично.
+    en: |
+      Waiting in line at the pharmacy, you idly slip your arm into the automatic cuff. The screen
+      blinks: 162/101. No headache, you feel great.
+  choices:
+    - id: treat
+      text: {ru: "Сходить к терапевту, подобрать таблетки, мерить дома", en: "See a GP, get pills, measure at home"}
+      tag: wise
+      cost_money: 4000
+      cost_will: 2
+      add_conditions: [hypertension_treated]
+      evidence: ch01_i7
+      outcome:
+        ru: "Каждые 10 мм рт. ст. снижения — на 20% меньше сердечно-сосудистых катастроф. Таблетка утром стала привычкой."
+        en: "Every 10 mmHg lower means 20% fewer major cardiovascular events. The morning pill became a habit."
+    - id: ignore
+      text: {ru: "Автомат врёт. Я же ничего не чувствую", en: "The machine is lying. I don't feel a thing"}
+      tag: risky
+      add_conditions: [hypertension]
+      evidence: ch01_i7
+      outcome:
+        ru: "Гипертония не болит. Среди взрослых 35–75 лет она у 44,7%, под контролем — у 7,2%."
+        en: "Hypertension doesn't hurt. 44.7% of adults aged 35–75 have it; 7.2% have it under control."
+
+- id: ch01_drunk_driver
+  title: {ru: "«Да я трезвый!»", en: "\"I'm fine to drive!\""}
+  min_age: 18
+  max_age: 65
+  category: safety
+  evidence: ch01_i9
+  narrative:
+    ru: |
+      Час ночи, загородная вечеринка, такси сюда не едут. Друг выпил «всего пару пива» и
+      звенит ключами: «Садись, домчу за двадцать минут».
+    en: |
+      1 a.m., a party out of town, no taxis come here. A friend had "only a couple of beers" and
+      jingles his keys: "Get in, I'll have you home in twenty minutes."
+  choices:
+    - id: ride
+      text: {ru: "Сесть к нему — двадцать минут, что может случиться", en: "Get in — it's twenty minutes, what could happen"}
+      tag: risky
+      instant_death_check:
+        chance: 0.01 # game approximation; drink-driving: no safe level of alcohol (ch01_i9)
+        scale_by: [trauma_accident_risk]
+        cause: trauma
+        death_reason: {ru: "ДТП: за рулём был пьяный водитель", en: "Road crash: the driver was drunk"}
+        evidence: ch01_i9
+      evidence: ch01_i9
+      outcome:
+        ru: "На повороте машину вынесло на обочину, но обошлось. Безопасной дозы алкоголя за рулём не существует."
+        en: "On a bend the car slid onto the verge, but you were lucky. There is no safe dose of alcohol behind the wheel."
+    - id: stay
+      text: {ru: "Остаться ночевать на диване и забрать у него ключи", en: "Sleep on the sofa and take his keys"}
+      tag: wise
+      cost_will: 1
+      delta_sanity: -2
+      evidence: ch01_i9
+      outcome:
+        ru: "Он обиделся, вы не выспались. Утром он сам сказал спасибо."
+        en: "He sulked and you slept badly. In the morning he thanked you himself."
+    - id: taxi
+      text: {ru: "Заказать дорогое такси из города", en: "Order an expensive taxi from the city"}
+      tag: wise
+      cost_money: 4500
+      evidence: ch01_i9
+      outcome:
+        ru: "Полтора часа ожидания и 4500 рублей. Дорогая, но живая поездка."
+        en: "An hour and a half of waiting and 4,500 rubles. An expensive ride, but you're alive."
+
+- id: ch01_thin_ice
+  title: {ru: "Короткий путь по льду", en: "A shortcut across the ice"}
+  min_age: 18
+  max_age: 75
+  category: safety
+  evidence: ch01_i41
+  narrative:
+    ru: |
+      Март. До остановки через замёрзший пруд — пять минут, вокруг — двадцать. По льду ещё
+      ходят рыбаки, лёд серо-белый, кое-где темнеют пятна.
+    en: |
+      March. Across the frozen pond to the bus stop is five minutes; around it, twenty.
+      Fishermen still walk on the ice, which is grey-white with dark patches here and there.
+  choices:
+    - id: cross
+      text: {ru: "Рискнуть: рыбаки же ходят", en: "Risk it: the fishermen walk on it"}
+      tag: risky
+      instant_death_check:
+        chance: 0.015 # game approximation; white ice holds half as much, thickness varies (ch01_i41)
+        cause: trauma
+        death_reason: {ru: "Утонул, провалившись под весенний лёд", en: "Drowned after falling through spring ice"}
+        evidence: ch01_i41
+      evidence: ch01_i41
+      outcome:
+        ru: "Лёд хрустнул у берега, но вы успели выскочить. Белый лёд вдвое слабее прозрачного."
+        en: "The ice cracked near the shore but you jumped clear. White ice is half as strong as clear ice."
+    - id: around
+      text: {ru: "Обойти по берегу", en: "Walk around by the shore"}
+      tag: wise
+      delta_sanity: -1
+      evidence: ch01_i41
+      outcome:
+        ru: "Опоздали на автобус. Толщина льда в двух шагах может отличаться с 12 до 2 сантиметров."
+        en: "You missed the bus. Ice can go from 12 cm to 2 cm thick within a couple of steps."
+
+- id: ch01_hpv
+  title: {ru: "Прививка от ВПЧ", en: "The HPV vaccine"}
+  min_age: 18
+  max_age: 30
+  category: health
+  evidence: ch01_i16
+  requires: {sex: female}
+  narrative:
+    ru: |
+      Гинеколог советует привиться от вируса папилломы человека: три дозы, дорого и не по
+      ОМС. Подруги говорят, что «в нашем возрасте уже поздно».
+    en: |
+      Your gynaecologist recommends the human papillomavirus vaccine: three doses, expensive and
+      not covered by insurance. Friends say it's "too late at our age".
+  choices:
+    - id: vaccinate
+      text: {ru: "Привиться: чем раньше, тем лучше", en: "Get vaccinated: the earlier the better"}
+      tag: wise
+      cost_money: 30000
+      # IRR 0.47 for invasive cervical cancer when vaccinated at 17–30; cervical
+      # cancer ≈ 7% of women's cancer deaths → 1 - 0.07×0.53 ≈ 0.96
+      stat_effects: {oncology_risk: 0.96}
+      evidence: ch01_i16
+      outcome:
+        ru: "Привитые в 17–30 лет болеют инвазивным раком шейки матки примерно вдвое реже."
+        en: "Women vaccinated at 17–30 get invasive cervical cancer about half as often."
+    - id: skip
+      text: {ru: "Потом. Сейчас есть траты поважнее", en: "Later. There are more important expenses"}
+      tag: neutral
+      evidence: ch01_i16
+      outcome:
+        ru: "Деньги ушли на отпуск. «Потом» так и не наступило."
+        en: "The money went on a holiday. \"Later\" never came."
+
+- id: ch01_colorectal
+  title: {ru: "Баночка для анализа", en: "A little sample pot"}
+  min_age: 45
+  max_age: 75
+  category: health
+  evidence: ch01_i19
+  narrative:
+    ru: |
+      Поликлиника зовёт на скрининг рака кишечника: сдать анализ кала на скрытую кровь или
+      сделать колоноскопию. Неприятно, неловко, и вроде ничего не беспокоит.
+    en: |
+      The clinic invites you to colorectal cancer screening: a stool test for hidden blood or a
+      colonoscopy. Unpleasant, awkward, and nothing seems wrong.
+  choices:
+    - id: screen
+      text: {ru: "Сдать тест и повторять раз в 1–2 года", en: "Do the test and repeat it every one or two years"}
+      tag: wise
+      cost_will: 1
+      # RR 0.75 for colorectal cancer death among the screened; colorectal
+      # cancer ≈ 10% of cancer deaths → 1 - 0.10×0.25 ≈ 0.975
+      stat_effects: {oncology_risk: 0.975}
+      evidence: ch01_i19
+      outcome:
+        ru: "Прошедшие хотя бы один скрининг умирают от рака кишечника примерно на 25% реже."
+        en: "People screened at least once die of colorectal cancer about 25% less often."
+    - id: skip
+      text: {ru: "Само пройдёт. Ничего же не болит", en: "It'll be fine. Nothing hurts"}
+      tag: risky
+      evidence: ch01_i19
+      outcome:
+        ru: "Рак кишечника на ранних стадиях и правда ничего не болит."
+        en: "Early colorectal cancer really doesn't hurt."
+
+- id: ch01_flu_shot
+  title: {ru: "Осенняя прививка от гриппа", en: "The autumn flu shot"}
+  min_age: 60
+  max_age: 84
+  category: health
+  repeatable: true
+  cooldown: 3
+  evidence: ch01_i20
+  narrative:
+    ru: |
+      Октябрь. В поликлинике бесплатно прививают от гриппа. Соседка по лавочке уверена,
+      что «от прививки как раз и заболевают».
+    en: |
+      October. The clinic offers free flu shots. Your neighbour on the bench is sure that "the
+      shot is what makes you sick".
+  choices:
+    - id: vaccinate
+      text: {ru: "Привиться, как каждую осень", en: "Get the shot, like every autumn"}
+      tag: wise
+      # HR 0.59 for death after a heart attack in the trial, RR 0.74 in older
+      # adults; applied to cardiovascular risk for the season and the next
+      stat_effects: {cardiovascular_risk: {factor: 0.85, years: 2}}
+      evidence: ch01_i20
+      outcome:
+        ru: "Укол, пластырь, чай с соседкой. В испытании у перенёсших инфаркт годовая смертность упала с 4,9% до 2,9%."
+        en: "A jab, a plaster, tea with the neighbour. In a trial of heart-attack patients yearly deaths fell from 4.9% to 2.9%."
+    - id: skip
+      text: {ru: "Соседка права: лучше не рисковать", en: "The neighbour is right: why risk it"}
+      tag: risky
+      evidence: ch01_i20
+      outcome:
+        ru: "Зимой грипп свалил вас на две недели. Сердцу такая нагрузка ни к чему."
+        en: "In winter the flu knocked you down for two weeks. Your heart didn't need that strain."
+      delta_health: -6
+
+- id: ch01_crisis
+  title: {ru: "Ночь, когда всё кончилось", en: "The night everything ended"}
+  min_age: 18
+  max_age: 84
+  category: mind
+  weight: 4
+  repeatable: true
+  cooldown: 5
+  evidence: ch01_i32
+  requires: {max_sanity: 22}
+  narrative:
+    ru: |
+      Третья бессонная ночь. Мысль «всем будет легче без меня» уже не пугает, а успокаивает.
+      В ящике стола лежит пачка снотворного.
+    en: |
+      The third sleepless night. The thought "everyone would be better off without me" no longer
+      frightens you; it soothes. A box of sleeping pills lies in the desk drawer.
+  choices:
+    - id: call
+      text: {ru: "Позвонить на линию помощи и сказать близкому: «Мне плохо»", en: "Call a crisis line and tell someone close: \"I'm not okay\""}
+      tag: wise
+      cost_will: 2
+      delta_sanity: 30
+      evidence: ch01_i32
+      outcome:
+        ru: "Подруга приехала через сорок минут и осталась до утра. У половины переживших попытку от мысли до действия прошло меньше 10 минут — вы эти минуты отдали другому человеку."
+        en: "A friend came within forty minutes and stayed till morning. For half of survivors, under ten minutes passed between the thought and the attempt — you handed those minutes to someone else."
+    - id: remove
+      text: {ru: "Отнести таблетки соседке «на хранение» и лечь спать", en: "Give the pills to a neighbour \"for safekeeping\" and go to bed"}
+      tag: wise
+      delta_sanity: 12
+      evidence: ch01_i25
+      outcome:
+        ru: "Ограничение доступа к средствам — проверенный способ снизить риск самоубийства."
+        en: "Limiting access to the means is a proven way to cut suicide risk."
+    - id: alone
+      text: {ru: "Никого не беспокоить. Справлюсь в одиночку", en: "Don't bother anyone. I'll handle it alone"}
+      tag: risky
+      instant_death_check:
+        chance: 0.06 # game approximation
+        cause: self_harm
+        death_reason: {ru: "Самоубийство: таблетки были под рукой, а рядом никого", en: "Suicide: the pills were at hand and nobody was there"}
+        evidence: ch01_i25
+      evidence: ch01_i25
+      outcome:
+        ru: "Утро всё-таки наступило. Вы не помните, как уснули. Таблетки всё ещё в ящике."
+        en: "Morning came after all. You don't remember falling asleep. The pills are still in the drawer."
+      delta_sanity: -5
+
+- id: ch01_condom
+  title: {ru: "Курортный роман", en: "A holiday romance"}
+  min_age: 18
+  max_age: 50
+  category: health
+  evidence: ch01_i30
+  narrative:
+    ru: |
+      Последний вечер у моря, вино, человек, с которым вы знакомы три дня. Презервативов нет,
+      аптека через квартал, и момент вот-вот уйдёт.
+    en: |
+      The last evening by the sea, wine, someone you've known for three days. No condoms, the
+      pharmacy is a block away, and the moment is about to pass.
+  choices:
+    - id: pharmacy
+      text: {ru: "Сбегать в аптеку", en: "Run to the pharmacy"}
+      tag: wise
+      cost_money: 600
+      cost_will: 1
+      evidence: ch01_i30
+      outcome:
+        ru: "Момент не ушёл. Презерватив каждый раз снижает риск передачи ВИЧ примерно на 70% и больше."
+        en: "The moment survived. Using a condom every time cuts HIV transmission by about 70% or more."
+    - id: without
+      text: {ru: "Один раз — не страшно", en: "Once won't hurt"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.04 # game approximation
+        kind: injury
+        delta_health: -15
+        delta_sanity: -20
+        text:
+          ru: "Через месяц — анализы, инфекция, долгое лечение и разговор, который вы не забудете."
+          en: "A month later: tests, an infection, long treatment and a conversation you'll never forget."
+        evidence: ch01_i30
+      evidence: ch01_i30
+      outcome:
+        ru: "Отличный вечер. «В основном с презервативом» почти так же опасно, как вообще без него."
+        en: "A great evening. \"Mostly with a condom\" is nearly as risky as never using one."

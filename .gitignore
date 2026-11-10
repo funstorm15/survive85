@@ -1,0 +1,9 @@
+/dist/
+/survive85
+/bin/
+*.test
+*.out
+coverage.*
+/scripts/*.pkg.tar.*
+/scripts/src/
+/scripts/pkg/

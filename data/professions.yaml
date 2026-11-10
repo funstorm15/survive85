@@ -1,0 +1,104 @@
+# Starting classes. Incomes are rubles a year left after living costs, before
+# the career curve (×0.7 under 25, ×1.3 at 35–54, ×0.4 pension from 65).
+# Profession modifiers are game balance, not findings from the book: they are
+# kept small so that decisions, not the class, decide the run.
+- id: developer
+  icon: "⌨"
+  name: {ru: "Программист", en: "Software developer"}
+  description:
+    ru: "Хорошо платят, но сидячая работа, переработки и юридические «красные линии» айтишников (глава 11): парсинг, читы, чужой код."
+    en: "Well paid, but sedentary, prone to overtime and to the legal red lines for techies (chapter 11): scraping, cheats, other people's code."
+  start_wealth: 60000
+  start_health: 80
+  start_sanity: 65
+  start_will: 5
+  income: 420000
+  income_spread: 0.25
+  study_until: 21
+  modifiers:
+    cardiovascular_risk: 1.10
+    legal_prison_risk: 1.15
+  per_year: {delta_sanity: -1}
+  flags: [techie]
+
+- id: worker
+  icon: "⚒"
+  name: {ru: "Рабочий", en: "Factory worker"}
+  description:
+    ru: "Крепкое здоровье и стабильная зарплата, но травмы на производстве (глава 19) — реальный риск."
+    en: "Strong body and a steady wage, but injuries at work (chapter 19) are a real risk."
+  start_wealth: 30000
+  start_health: 90
+  start_sanity: 70
+  start_will: 4
+  income: 180000
+  income_spread: 0.15
+  modifiers:
+    trauma_accident_risk: 1.30
+  flags: [manual_labor]
+
+- id: office
+  icon: "☕"
+  name: {ru: "Офисный менеджер", en: "Office manager"}
+  description:
+    ru: "Средний доход, средний стресс. Главные враги — стул, кофе с сахаром и дедлайны."
+    en: "Average pay, average stress. The main enemies are the chair, sugary coffee and deadlines."
+  start_wealth: 40000
+  start_health: 85
+  start_sanity: 70
+  start_will: 5
+  income: 240000
+  income_spread: 0.15
+  study_until: 20
+  modifiers:
+    cardiovascular_risk: 1.05
+
+- id: driver
+  icon: "⛟"
+  name: {ru: "Курьер / водитель", en: "Courier / driver"}
+  description:
+    ru: "Деньги сразу после школы, но по 10 часов в день на дороге. Ремень и шлем решают всё (глава 1)."
+    en: "Money straight out of school, but ten hours a day on the road. Seat belts and helmets decide everything (chapter 1)."
+  start_wealth: 20000
+  start_health: 88
+  start_sanity: 68
+  start_will: 4
+  income: 200000
+  income_spread: 0.2
+  modifiers:
+    trauma_accident_risk: 1.45
+  flags: [drives_for_work]
+
+- id: entrepreneur
+  icon: "₪"
+  name: {ru: "Предприниматель", en: "Entrepreneur"}
+  description:
+    ru: "Доход скачет от убытка до богатства, а налоговые и договорные ловушки (глава 12) рядом. Стресс — постоянный спутник."
+    en: "Income swings from losses to riches, with tax and contract traps (chapter 12) close by. Stress is a constant companion."
+  start_wealth: 150000
+  start_health: 82
+  start_sanity: 62
+  start_will: 6
+  income: 330000
+  income_spread: 0.9
+  study_until: 19
+  modifiers:
+    legal_prison_risk: 1.30
+  per_year: {delta_sanity: -2}
+  flags: [business_owner]
+
+- id: student
+  icon: "✎"
+  name: {ru: "Студент-медик", en: "Medical student"}
+  description:
+    ru: "Шесть лет без денег, зато вы знаете, что парацетамол есть в порошках от простуды. Больше силы воли, высокий доход потом."
+    en: "Six years without money, but you know cold powders contain paracetamol. More willpower, high income later."
+  start_wealth: 10000
+  start_health: 85
+  start_sanity: 66
+  start_will: 7
+  income: 300000
+  income_spread: 0.1
+  study_until: 24
+  per_year: {delta_sanity: -1}
+  flags: [medic]

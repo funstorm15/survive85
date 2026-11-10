@@ -1,0 +1,257 @@
+# Chapter 19 — "Employment, resignation, and work injury", plus chapter 29
+# (after losing a job).
+
+- id: ch19_layoff
+  title: {ru: "Оптимизация", en: "Restructuring"}
+  min_age: 25
+  max_age: 62
+  category: work
+  evidence: ch19_i7
+  narrative:
+    ru: |
+      Кадровик кладёт перед вами заявление «по собственному желанию»: «Подпиши сегодня — дадим
+      хорошую характеристику. Иначе будет хуже».
+    en: |
+      HR slides a "voluntary resignation" letter across the table: "Sign today and we'll give
+      you a good reference. Otherwise it'll go badly."
+  choices:
+    - id: refuse
+      text: {ru: "Не подписывать и требовать выходное пособие", en: "Don't sign; demand severance"}
+      tag: wise
+      cost_will: 2
+      delta_wealth: 180000
+      delta_sanity: -6
+      set_flags: [laid_off]
+      evidence: ch19_i4
+      outcome:
+        ru: "Месячный заработок за каждый полный год работы. Подпись «по собственному» обычно лишает и пособия, и выплат по безработице."
+        en: "A month's wage per full year of service. Signing \"voluntarily\" usually wipes out both severance and unemployment benefits."
+    - id: sign
+      text: {ru: "Подписать, чтобы не портить отношения", en: "Sign to avoid a fight"}
+      tag: risky
+      delta_sanity: -10
+      set_flags: [laid_off]
+      evidence: ch19_i7
+      outcome:
+        ru: "Уволились «сами». Не обязательно подписывать в тот же день — можно взять ночь на размышление."
+        en: "You \"quit\". You don't have to sign the same day — you can sleep on it."
+
+- id: ch29_after_layoff
+  title: {ru: "Три месяца без работы", en: "Three months out of work"}
+  min_age: 25
+  max_age: 64
+  category: mind
+  weight: 3
+  evidence: ch29_i3
+  requires: {flags: [laid_off], flag_years: {laid_off: 0}}
+  narrative:
+    ru: |
+      Будильник давно не нужен. Вы ложитесь в четыре, встаёте к обеду, пиво стало вечерней
+      нормой. Резюме разосланы, ответов нет.
+    en: |
+      You haven't needed an alarm in ages. You go to bed at four and get up at noon; a beer has
+      become the evening norm. CVs are out, no replies.
+  choices:
+    - id: routine
+      text: {ru: "Режим, утренние прогулки, служба занятости", en: "A routine, morning walks, the job centre"}
+      tag: wise
+      cost_will: 3
+      delta_sanity: 10
+      clear_flags: [laid_off]
+      evidence: ch29_i3
+      outcome:
+        ru: "Через пять месяцев — новая работа. У потерявших работу смертность примерно на 60% выше, и часть этого — курение и алкоголь."
+        en: "A new job five months later. People who lose their jobs die about 60% more often, and part of that is smoking and drinking."
+    - id: drift
+      text: {ru: "Отдохнуть. Заслужил", en: "Rest. You've earned it"}
+      tag: risky
+      delta_sanity: -12
+      stat_effects: {cardiovascular_risk: {factor: 1.3, years: 5}} # HR 1.63 all-cause after job loss, highest in the first 10 years
+      clear_flags: [laid_off]
+      evidence: ch29_i3
+      outcome:
+        ru: "Полгода пролетели на диване. Работу вы нашли, но хуже прежней."
+        en: "Six months vanished on the sofa. You found a job, worse than the last one."
+
+- id: ch19_dust
+  title: {ru: "Цех без респираторов", en: "A workshop without respirators"}
+  min_age: 18
+  max_age: 58
+  category: work
+  evidence: ch19_i10
+  requires: {flags: [manual_labor]}
+  narrative:
+    ru: |
+      Новый участок: шлифовка, пыль висит в воздухе, станки ревут. Респираторы и беруши
+      «закончились», а за вредность доплачивают 30 000 в год.
+    en: |
+      A new section: grinding, dust hangs in the air, machines roar. Respirators and earplugs
+      have "run out", and there's a 30,000-a-year hazard bonus.
+  choices:
+    - id: demand
+      text: {ru: "Требовать СИЗ письменно и не работать без них", en: "Demand protective gear in writing and refuse to work without it"}
+      tag: wise
+      cost_will: 2
+      delta_sanity: -4
+      evidence: ch19_i10
+      outcome:
+        ru: "Респираторы нашлись через два дня. Отказ работать без защиты — ваше право, штрафовать за это нельзя."
+        en: "Respirators turned up two days later. Refusing unprotected work is your right; you can't be penalised for it."
+    - id: work
+      text: {ru: "Работать так: доплата же", en: "Work anyway: there's a bonus"}
+      tag: risky
+      add_conditions: [dust_job]
+      evidence: ch19_i10
+      outcome:
+        ru: "Пневмокониоз и тугоухость не восстанавливаются. Через несколько лет вы переспрашиваете каждую фразу."
+        en: "Pneumoconiosis and hearing loss never recover. A few years later you ask people to repeat every sentence."
+
+- id: ch19_injury_cash
+  title: {ru: "Конверт от начальника", en: "An envelope from the boss"}
+  min_age: 18
+  max_age: 64
+  category: work
+  weight_by: {trauma_accident_risk: 1}
+  evidence: ch19_i11
+  requires: {flags: [manual_labor]}
+  narrative:
+    ru: |
+      Вам раздробило палец прессом. Начальник приносит в больницу конверт с 50 000: «Давай без
+      бумаг, скажем, что дома поранился. Тебе же лучше».
+    en: |
+      A press crushed your finger. Your boss brings 50,000 in an envelope to the hospital: "Let's
+      skip the paperwork, say you hurt it at home. It's better for you."
+  choices:
+    - id: report
+      text: {ru: "Оформить производственную травму", en: "File it as a workplace injury"}
+      tag: wise
+      cost_will: 2
+      delta_health: -10
+      delta_wealth: 220000
+      delta_sanity: -4
+      evidence: ch19_i11
+      outcome:
+        ru: "Больничный оплатили полностью, назначили выплату по утрате трудоспособности. Без признания травмы всё это исчезает."
+        en: "Sick pay in full and a disability payment. Without official recognition all of that disappears."
+    - id: envelope
+      text: {ru: "Взять конверт", en: "Take the envelope"}
+      tag: risky
+      delta_health: -10
+      delta_wealth: 50000
+      evidence: ch19_i11
+      outcome:
+        ru: "Через год палец так и не сгибается. Работать на прессе вы больше не можете, а выплат нет."
+        en: "A year later the finger still won't bend. You can't work the press any more, and there are no payments."
+
+- id: ch19_unwell_commute
+  title: {ru: "Плохо по дороге на работу", en: "Unwell on the way to work"}
+  min_age: 35
+  max_age: 66
+  category: emergency
+  weight: 0.8
+  weight_by: {cardiovascular_risk: 1.2}
+  evidence: ch19_i12
+  narrative:
+    ru: |
+      В метро потемнело в глазах, давит в груди, немеет рука. Коллеги говорят: «Если дойдёшь до
+      рабочего места, это будет производственная травма — компания заплатит».
+    en: |
+      In the metro your vision goes dark, your chest tightens, your arm goes numb. Colleagues once
+      said: "If you make it to your desk, it counts as a work injury — the company pays."
+  choices:
+    - id: call
+      text: {ru: "Выйти на станции и вызвать скорую", en: "Get off at the station and call an ambulance"}
+      tag: wise
+      delta_health: -15
+      evidence: ch19_i12
+      outcome:
+        ru: "Нестабильная стенокардия, вовремя поставленный стент. Минуты, потраченные на «дойти до стола», стоят шанса выжить."
+        en: "Unstable angina and a stent in time. Minutes spent getting to your desk cost you your chance to survive."
+    - id: push
+      text: {ru: "Доехать до офиса любой ценой", en: "Get to the office no matter what"}
+      tag: risky
+      delta_health: -30
+      instant_death_check:
+        chance: 0.03 # game approximation
+        cause: cardiovascular
+        death_reason: {ru: "Инфаркт по дороге на работу: торопился «дойти до рабочего места»", en: "A heart attack on the way to work, rushing to \"reach the desk\""}
+        evidence: ch19_i12
+      evidence: ch19_i12
+      outcome:
+        ru: "Вы упали в лифте бизнес-центра. Болезнь по дороге до рабочего места под «производственную» не подходит."
+        en: "You collapsed in the office lift. Illness before you reach the workstation doesn't count as a work injury anyway."
+
+- id: ch19_bullying
+  title: {ru: "Начальник кричит при всех", en: "A boss who screams in front of everyone"}
+  min_age: 20
+  max_age: 60
+  category: work
+  evidence: ch19_i16
+  requires: {not_conditions: [bullied]}
+  narrative:
+    ru: |
+      Каждую планёрку руководитель находит повод унизить вас при всём отделе. Сегодня он
+      швырнул ваш отчёт на пол.
+    en: |
+      At every meeting your manager finds a way to humiliate you in front of the whole team.
+      Today he threw your report on the floor.
+  choices:
+    - id: record
+      text: {ru: "Записывать, собрать доказательства и жаловаться выше", en: "Record it, gather evidence, complain higher up"}
+      tag: wise
+      cost_will: 3
+      delta_sanity: -5
+      evidence: ch19_i16
+      outcome:
+        ru: "Через два месяца его перевели. Оскорбления — не то, что можно просто «перетерпеть»."
+        en: "Two months later he was moved elsewhere. Insults aren't something you simply \"put up with\"."
+    - id: endure
+      text: {ru: "Терпеть: зарплата хорошая", en: "Endure: the pay is good"}
+      tag: risky
+      add_conditions: [bullied]
+      set_flags: [bullied_since]
+      evidence: ch19_i16
+      outcome:
+        ru: "У жертв травли через годы риск инфаркта и инсульта примерно на 60% выше, а мысли о суициде — вдвое чаще."
+        en: "Years later, victims of workplace bullying have about 60% higher risk of heart disease and stroke, and twice the suicidal thoughts."
+    - id: quit
+      text: {ru: "Уволиться и искать новое место", en: "Quit and look elsewhere"}
+      tag: neutral
+      delta_wealth: -80000
+      delta_sanity: 6
+      outcome:
+        ru: "Три месяца без зарплаты, зато без крика."
+        en: "Three months without pay, but no more screaming."
+
+- id: ch19_leave_bully
+  title: {ru: "Годы унижений", en: "Years of humiliation"}
+  min_age: 22
+  max_age: 64
+  category: work
+  weight: 1.5
+  evidence: ch19_i16
+  requires: {conditions: [bullied], flag_years: {bullied_since: 3}}
+  narrative:
+    ru: |
+      Вы просыпаетесь с тяжестью в груди по воскресеньям вечером. Знакомый зовёт в спокойную
+      команду — на 20% меньше денег.
+    en: |
+      Every Sunday evening you wake with a weight on your chest. A friend invites you to a calm
+      team — for 20% less money.
+  choices:
+    - id: leave
+      text: {ru: "Перейти", en: "Make the move"}
+      tag: wise
+      remove_conditions: [bullied]
+      delta_sanity: 15
+      evidence: ch19_i16
+      outcome:
+        ru: "В первую же неделю вы заметили, что перестали скрипеть зубами."
+        en: "In the first week you noticed you'd stopped grinding your teeth."
+    - id: stay
+      text: {ru: "Остаться ещё на год", en: "Stay one more year"}
+      tag: risky
+      evidence: ch19_i16
+      outcome:
+        ru: "Ещё один год."
+        en: "One more year."

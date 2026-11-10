@@ -1,0 +1,25 @@
+# Conditions the engine itself relies on. Chapter files add their own
+# (habits, illnesses, safety measures) in conditions/NN_*.yaml.
+- id: in_prison
+  icon: "▦"
+  kind: bad
+  name: {ru: "В заключении", en: "In prison"}
+  description:
+    ru: "Ни дохода, ни нормального сна. Каждый год за решёткой бьёт по психике и здоровью."
+    en: "No income and no proper sleep. Every year behind bars wears down mind and body."
+  suppress_income: true
+  forces_event: prison_year
+  modifiers:
+    trauma_accident_risk: 1.5
+  per_year: {delta_sanity: -8, delta_health: -3}
+
+- id: criminal_record
+  icon: "§"
+  kind: bad
+  name: {ru: "Судимость", en: "Criminal record"}
+  description:
+    ru: "После срока сложнее найти работу, а повторное нарушение карается строже."
+    en: "After a sentence work is harder to find and a repeat offence is punished harder."
+  modifiers:
+    legal_prison_risk: 1.2
+  per_year: {delta_wealth: -20000}

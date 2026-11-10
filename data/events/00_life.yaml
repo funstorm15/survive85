@@ -1,0 +1,100 @@
+# Core events that keep a run going: the year in prison forced by the
+# in_prison condition, and repeatable "ordinary year" fillers that only move
+# visible stats (no claims about risk, so no evidence is attached).
+- id: prison_year
+  title: {ru: "Год за решёткой", en: "A year behind bars"}
+  min_age: 18
+  max_age: 84
+  category: legal
+  repeatable: true
+  cooldown: 1
+  narrative:
+    ru: |
+      Подъём в шесть, перекличка, работа в цеху за копейки. Письма из дома приходят всё реже.
+      Срок идёт, но мир снаружи живёт без вас.
+    en: |
+      Up at six, roll call, work in the shop for pennies. Letters from home come less and less often.
+      The sentence runs, but the world outside goes on without you.
+  choices:
+    - id: endure
+      text: {ru: "Держаться, читать, отсчитывать дни", en: "Hold on, read, count the days"}
+      tag: neutral
+      outcome:
+        ru: "Ещё один год вычеркнут из календаря."
+        en: "Another year crossed off the calendar."
+
+- id: ordinary_year
+  title: {ru: "Обычный год", en: "An ordinary year"}
+  min_age: 18
+  max_age: 84
+  category: life
+  weight: 0.6
+  repeatable: true
+  cooldown: 3
+  narrative:
+    ru: |
+      Ничего особенного не случилось: работа, дом, редкие выходные. Решите, на что потратить
+      свободные вечера в этом году.
+    en: |
+      Nothing special happened: work, home, the odd weekend off. Decide what to do with your
+      free evenings this year.
+  choices:
+    - id: overtime
+      text: {ru: "Брать подработки и переработки", en: "Take side gigs and overtime"}
+      tag: neutral
+      delta_wealth: 60000
+      delta_sanity: -8
+      cost_time: 400
+      outcome:
+        ru: "Денег стало больше, сил — меньше."
+        en: "More money, less energy."
+    - id: rest
+      text: {ru: "Высыпаться и отдыхать", en: "Sleep enough and rest"}
+      tag: neutral
+      delta_sanity: 8
+      delta_health: 2
+      outcome:
+        ru: "Год прошёл спокойно, вы восстановились."
+        en: "A calm year; you recovered."
+    - id: friends
+      text: {ru: "Чаще видеться с друзьями и семьёй", en: "See friends and family more often"}
+      tag: neutral
+      cost_money: 15000
+      delta_sanity: 12
+      outcome:
+        ru: "Тёплые вечера с близкими людьми — лучшее, что было в этом году."
+        en: "Warm evenings with people close to you were the best part of the year."
+
+- id: ordinary_year_tired
+  title: {ru: "Усталость копится", en: "Tiredness builds up"}
+  min_age: 18
+  max_age: 84
+  category: mind
+  weight: 1.5
+  repeatable: true
+  cooldown: 4
+  requires: {max_sanity: 35}
+  narrative:
+    ru: |
+      Утром тяжело вставать, вечером не хочется ничего. Вы замечаете, что срываетесь
+      на близких из-за мелочей.
+    en: |
+      Getting up is hard, and in the evening you want nothing at all. You notice yourself
+      snapping at people close to you over small things.
+  choices:
+    - id: vacation
+      text: {ru: "Взять отпуск и уехать на две недели", en: "Take two weeks off and go away"}
+      tag: wise
+      cost_money: 60000
+      delta_sanity: 20
+      outcome:
+        ru: "Вы вернулись другим человеком. Хотя бы на время."
+        en: "You came back a different person. At least for a while."
+    - id: push_through
+      text: {ru: "Терпеть: «Сейчас не время отдыхать»", en: "Push through: \"Now is not the time to rest\""}
+      tag: risky
+      delta_sanity: -10
+      delta_wealth: 30000
+      outcome:
+        ru: "Работа сделана, но внутри будто что-то перегорело."
+        en: "The work got done, but something inside seems to have burnt out."

@@ -1,0 +1,228 @@
+# Habits and long-term states. Each modifier is derived from the evidence it
+# cites; where the book's number covers a narrower outcome than the game's
+# cause group, it is diluted as described in docs/CONTENT_GUIDE.md §3.
+
+- id: smoker
+  icon: "♨"
+  kind: bad
+  name: {ru: "Курильщик", en: "Smoker"}
+  description:
+    ru: "Пачка в день. Курильщики в среднем живут на 10 с лишним лет меньше."
+    en: "A pack a day. Smokers live on average more than ten years less."
+  evidence: ch02_i1
+  # Calibrated with `survive85 sim` so that smoking from 18 costs about ten
+  # years of life expectancy, the book's figure (ch02_i1).
+  modifiers: {oncology_risk: 2.6, cardiovascular_risk: 1.9}
+  per_year: {delta_health: -2, delta_wealth: -36000}
+  death_reasons:
+    oncology: {ru: "Рак лёгкого у курильщика со стажем", en: "Lung cancer after years of smoking"}
+    cardiovascular: {ru: "Инфаркт миокарда на фоне многолетнего курения", en: "Myocardial infarction after years of smoking"}
+
+- id: ex_smoker
+  icon: "✓"
+  kind: good
+  name: {ru: "Бросил курить", en: "Quit smoking"}
+  description:
+    ru: "Отказ от курения до 40 лет убирает около 90% лишнего риска смерти."
+    en: "Quitting before 40 removes about 90% of the excess risk of death."
+  evidence: ch02_i1
+  # ~90% of the smoker's excess removed: 1 + 0.1×1.6 ≈ 1.16, 1 + 0.1×0.9 ≈ 1.09
+  modifiers: {oncology_risk: 1.16, cardiovascular_risk: 1.09}
+
+- id: heavy_drinker
+  icon: "🍺"
+  kind: bad
+  name: {ru: "Много пьёт", en: "Heavy drinker"}
+  description:
+    ru: "Больше 350 г чистого алкоголя в неделю: минус 4–5 лет жизни."
+    en: "Over 350 g of pure alcohol a week: four to five years of life lost."
+  evidence: ch02_i19
+  # RR 1.35 for the heaviest drinkers (ch02_i19) applies to all-cause
+  # mortality; alcohol's excess is concentrated in liver disease and injuries.
+  modifiers: {toxicology_liver_risk: 2.4, trauma_accident_risk: 1.35, cardiovascular_risk: 1.15}
+  per_year: {delta_health: -2, delta_sanity: -2, delta_wealth: -40000}
+  death_reasons:
+    liver: {ru: "Алкогольный цирроз печени", en: "Alcoholic liver cirrhosis"}
+    trauma: {ru: "Травма в состоянии сильного опьянения", en: "An injury while heavily drunk"}
+
+- id: sedentary
+  icon: "▭"
+  kind: bad
+  name: {ru: "Сидячий образ жизни", en: "Sedentary life"}
+  description:
+    ru: "Почти весь день сидя. Больше всех сидящие умирают в 2,6 раза чаще меньше всех сидящих."
+    en: "Sitting almost all day. Those who sit most die 2.6 times as often as those who sit least."
+  evidence: ch02_i17
+  # HR 2.63 compares extreme quantiles; an ordinary desk-bound life sits
+  # between them, so a third of the log-effect is used: 2.63^(1/3) ≈ 1.38
+  modifiers: {cardiovascular_risk: 1.38}
+  per_year: {delta_health: -1}
+
+- id: active
+  icon: "⇡"
+  kind: good
+  name: {ru: "7–8 тысяч шагов в день", en: "7–8 thousand steps a day"}
+  description:
+    ru: "Ходьба около 7800 шагов в день: риск смерти примерно на 40% ниже, чем у ходящих 3500."
+    en: "About 7,800 steps a day: roughly 40% lower risk of death than at 3,500."
+  evidence: ch02_i11
+  # HR 0.60 (7,800 vs 3,500 steps) on all-cause mortality, split over the
+  # causes physical activity acts on.
+  modifiers: {cardiovascular_risk: 0.65, oncology_risk: 0.85}
+  per_year: {delta_health: 2, delta_sanity: 1}
+
+- id: strength_training
+  icon: "▲"
+  kind: good
+  name: {ru: "Силовые тренировки", en: "Strength training"}
+  description:
+    ru: "30–60 минут силовых в неделю: риск смерти на 10–20% ниже."
+    en: "30–60 minutes of strength training a week: 10–20% lower risk of death."
+  evidence: ch02_i16
+  modifiers: {cardiovascular_risk: 0.88, oncology_risk: 0.92}
+  per_year: {delta_health: 1}
+
+- id: racket_player
+  icon: "◎"
+  kind: good
+  name: {ru: "Играет в бадминтон", en: "Plays badminton"}
+  description:
+    ru: "Ракеточные виды спорта: смертность от сердечно-сосудистых причин примерно на 56% ниже (наблюдательные данные)."
+    en: "Racket sports: about 56% lower cardiovascular mortality (observational data)."
+  evidence: ch02_i14
+  # 56% lower CVD death is observational; discounted by half → 0.72
+  modifiers: {cardiovascular_risk: 0.72}
+  per_year: {delta_sanity: 3, delta_wealth: -12000}
+
+- id: sugary_drinks
+  icon: "◍"
+  kind: bad
+  name: {ru: "Сладкие напитки каждый день", en: "Sugary drinks every day"}
+  description:
+    ru: "Больше двух сладких напитков в день: риск смерти примерно на 20% выше."
+    en: "More than two sugary drinks a day: about 20% higher risk of death."
+  evidence: ch02_i7
+  # HR 1.21 all-cause, carried mostly by cardiometabolic deaths → 1.3 on CVD
+  modifiers: {cardiovascular_risk: 1.3}
+  per_year: {delta_health: -1, delta_wealth: -15000}
+
+- id: potassium_salt
+  icon: "⚗"
+  kind: good
+  name: {ru: "Калиевая соль", en: "Potassium salt"}
+  description:
+    ru: "Низконатриевая соль: повторный инсульт на 14% реже, смерть за 5 лет на 12% реже."
+    en: "Low-sodium salt: 14% fewer repeat strokes, 12% fewer deaths within five years."
+  evidence: ch02_i9
+  # RR 0.86 for stroke; strokes ≈ 40% of cardiovascular deaths → 1-0.4×0.14 ≈ 0.94
+  modifiers: {cardiovascular_risk: 0.94}
+
+- id: hypertension
+  icon: "♥"
+  kind: bad
+  name: {ru: "Гипертония без лечения", en: "Untreated hypertension"}
+  description:
+    ru: "Давление 160/100, и вы «чувствуете себя нормально»."
+    en: "Blood pressure of 160/100, and you \"feel fine\"."
+  evidence: ch01_i7
+  # Each 10 mmHg lowers major cardiovascular events by 20% (RR 0.80);
+  # untreated 20 mmHg above target ≈ 1/0.8² ≈ 1.56
+  modifiers: {cardiovascular_risk: 1.56}
+  death_reasons:
+    cardiovascular: {ru: "Геморрагический инсульт на фоне нелеченой гипертонии", en: "Haemorrhagic stroke from untreated hypertension"}
+
+- id: hypertension_treated
+  icon: "♡"
+  kind: neutral
+  name: {ru: "Давление под контролем", en: "Blood pressure under control"}
+  description:
+    ru: "Таблетки каждый день, тонометр дома. Риск почти как у здоровых."
+    en: "Pills every day, a cuff at home. Risk almost back to normal."
+  evidence: ch02_i12
+  modifiers: {cardiovascular_risk: 1.05}
+  per_year: {delta_wealth: -6000}
+
+- id: short_sleep
+  icon: "☾"
+  kind: bad
+  name: {ru: "Хронический недосып", en: "Chronic short sleep"}
+  description:
+    ru: "Меньше 7 часов и рваный режим: смертность примерно на 10% выше."
+    en: "Under seven hours and an irregular schedule: about 10% higher mortality."
+  evidence: ch02_i13
+  # RR 1.12 all-cause, applied to the two big disease groups
+  modifiers: {cardiovascular_risk: 1.12, oncology_risk: 1.05}
+  per_year: {delta_sanity: -4}
+
+- id: night_shift
+  icon: "◐"
+  kind: bad
+  name: {ru: "Ночные смены", en: "Night shifts"}
+  description:
+    ru: "Сердечно-сосудистые смерти у работающих в ночь примерно на 27% чаще."
+    en: "About 27% more cardiovascular deaths among night-shift workers."
+  evidence: ch02_i39
+  modifiers: {cardiovascular_risk: 1.27} # RR 1.27 for cardiovascular death
+  per_year: {delta_wealth: 70000, delta_sanity: -3}
+
+- id: obese
+  icon: "●"
+  kind: bad
+  name: {ru: "Ожирение (ИМТ 32)", en: "Obesity (BMI 32)"}
+  description:
+    ru: "При ИМТ 30–35 риск смерти примерно на 45% выше."
+    en: "At BMI 30–35 the risk of death is about 45% higher."
+  evidence: ch02_i32
+  # HR 1.45 all-cause → mostly cardiometabolic, part cancer
+  modifiers: {cardiovascular_risk: 1.6, oncology_risk: 1.1}
+  per_year: {delta_health: -1}
+
+- id: hot_tea
+  icon: "☕"
+  kind: bad
+  name: {ru: "Пьёт кипяток", en: "Drinks scalding tea"}
+  description:
+    ru: "Очень горячий чай повышает риск рака пищевода в 8 раз."
+    en: "Very hot tea raises the risk of oesophageal cancer eightfold."
+  evidence: ch02_i30
+  # ×8 for oesophageal cancer, ≈5% of cancer deaths → 1 + 0.05×7 ≈ 1.35
+  modifiers: {oncology_risk: 1.35}
+  death_reasons:
+    oncology: {ru: "Рак пищевода после многих лет горячего чая", en: "Oesophageal cancer after years of scalding tea"}
+
+- id: isolated
+  icon: "◌"
+  kind: bad
+  name: {ru: "Одиночество", en: "Social isolation"}
+  description:
+    ru: "Социальная изоляция: риск смерти примерно на 30% выше."
+    en: "Social isolation: about 30% higher risk of death."
+  evidence: ch22_i9
+  modifiers: {cardiovascular_risk: 1.3}
+  per_year: {delta_sanity: -5}
+
+- id: steroid_user
+  icon: "☣"
+  kind: bad
+  name: {ru: "Курс анаболиков", en: "On anabolic steroids"}
+  description:
+    ru: "Положительный допинг-тест в спортзале: риск смерти втрое выше."
+    en: "A positive gym doping test: three times the risk of death."
+  evidence: ch28_i5
+  # HR 3.0 all-cause, carried by the heart and the liver
+  modifiers: {cardiovascular_risk: 2.6, toxicology_liver_risk: 2.0}
+  per_year: {delta_sanity: -3, delta_wealth: -30000}
+  death_reasons:
+    cardiovascular: {ru: "Внезапная сердечная смерть на фоне анаболических стероидов", en: "Sudden cardiac death while using anabolic steroids"}
+
+- id: heart_disease
+  icon: "♥"
+  kind: bad
+  name: {ru: "Перенёс инфаркт", en: "Survived a heart attack"}
+  description:
+    ru: "Сердце уже один раз подвело. Таблетки — пожизненно."
+    en: "Your heart has failed you once. Pills for life."
+  evidence: ch13_i7
+  # game approximation: secondary-prevention patients carry roughly double the risk
+  modifiers: {cardiovascular_risk: 2.0}
+  per_year: {delta_health: -1, delta_wealth: -12000}
