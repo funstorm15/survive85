@@ -1,0 +1,809 @@
+# Chapter 8 — "Protect yourself: laws and personal safety", with chapters 5
+# (money), 7 (getting by with no money) and 12 (starting a business). These are
+# money and freedom items: amounts follow the book's cases (1 yuan ≈ 12 ₽).
+
+- id: ch08_guarantor
+  title: {ru: "«Ты же мне друг»", en: "\"You're my friend, right?\""}
+  min_age: 22
+  max_age: 60
+  category: money
+  evidence: ch08_i18
+  narrative:
+    ru: |
+      Старый друг открывает автосервис и берёт кредит на полтора миллиона. Банк просит
+      поручителя. «Это формальность, я же плачу. Просто подпиши тут и тут».
+    en: |
+      An old friend is opening a car repair shop and taking a 1.5-million loan. The bank wants a
+      guarantor. "It's a formality, I'm paying. Just sign here and here."
+  choices:
+    - id: sign
+      text: {ru: "Подписать не читая — дружба дороже", en: "Sign without reading — friendship matters more"}
+      tag: risky
+      delta_sanity: 4
+      set_flags: [guarantor]
+      evidence: ch08_i18
+      outcome:
+        ru: "Друг обнял вас. В договоре было написано «солидарная ответственность», но вы не читали."
+        en: "Your friend hugged you. The contract said \"joint and several liability\", but you didn't read it."
+    - id: read
+      text: {ru: "Прочитать договор и отказаться от солидарного поручительства", en: "Read the contract and refuse a joint-and-several guarantee"}
+      tag: wise
+      cost_will: 2
+      delta_sanity: -4
+      evidence: ch08_i18
+      outcome:
+        ru: "Друг обиделся. При солидном поручительстве банк может идти сразу к вам, минуя должника."
+        en: "Your friend took offence. Under a joint-and-several guarantee the bank can come straight to you, skipping the borrower."
+    - id: lend_small
+      text: {ru: "Отказать, но дать в долг сумму, которую не жалко, по расписке", en: "Say no, but lend an amount you can afford to lose, with a signed note"}
+      tag: wise
+      cost_money: 50000
+      evidence: ch08_i18
+      outcome:
+        ru: "Расписка с суммой, сроком и подписями, перевод — только через банк. Друг вернул через год."
+        en: "A note with amount, term and signatures, money sent by bank transfer. He paid it back a year later."
+      delta_wealth: 50000
+
+- id: ch08_guarantee_called
+  title: {ru: "Звонок из банка", en: "A call from the bank"}
+  min_age: 24
+  max_age: 70
+  category: money
+  weight: 4
+  evidence: ch08_i18
+  requires: {flags: [guarantor], flag_years: {guarantor: 2}}
+  narrative:
+    ru: |
+      Автосервис друга закрылся, сам он не берёт трубку. Банк вежливо сообщает: долг 1 400 000
+      плюс пени, вы — солидарный поручитель. Счета скоро арестуют.
+    en: |
+      Your friend's garage has closed and he won't pick up. The bank politely informs you: the
+      debt is 1,400,000 plus penalties, and you are a joint-and-several guarantor. Your accounts
+      will be frozen soon.
+  choices:
+    - id: pay
+      text: {ru: "Платить: продать машину, занять у родителей", en: "Pay: sell the car, borrow from your parents"}
+      tag: neutral
+      delta_wealth: -1400000
+      delta_sanity: -20
+      clear_flags: [guarantor]
+      evidence: ch08_i18
+      outcome:
+        ru: "Пять лет вы отдаёте чужой долг. Подпись — это обязательство, отпечаток пальца — тоже."
+        en: "For five years you pay off someone else's debt. A signature is binding, and so is a fingerprint."
+    - id: lawyer
+      text: {ru: "Нанять юриста и требовать сначала взыскания с должника", en: "Hire a lawyer and demand they pursue the borrower first"}
+      tag: neutral
+      cost_money: 80000
+      delta_wealth: -900000
+      delta_sanity: -12
+      clear_flags: [guarantor]
+      evidence: ch08_i18
+      outcome:
+        ru: "Юрист отыграл часть: продали оборудование сервиса. Остаток всё равно ваш."
+        en: "The lawyer clawed back some: the garage equipment was sold. The rest is still on you."
+
+- id: ch08_card_rent
+  title: {ru: "Подработка на карте", en: "A side job with your card"}
+  min_age: 18
+  max_age: 35
+  category: legal
+  evidence: ch09_i5
+  narrative:
+    ru: |
+      В телеграм-канале «подработки для студентов» предлагают 30 000 в месяц: оформить карту
+      и «просто принимать переводы» от «партнёров», а потом пересылать дальше.
+    en: |
+      A "student side gigs" channel offers 30,000 a month to open a bank card and "just receive
+      transfers" from "partners", then forward them on.
+  choices:
+    - id: accept
+      text: {ru: "Согласиться: деньги лёгкие", en: "Agree: easy money"}
+      tag: risky
+      delta_wealth: 60000
+      stat_effects: {legal_prison_risk: 3.0} # game approximation; renting out cards is illegal in itself (ch08_i8)
+      catastrophe_check:
+        chance: 0.15 # game approximation
+        kind: prison
+        years: 2
+        delta_sanity: -15
+        text:
+          ru: "Через ваши карты прошли деньги обманутых пенсионеров. Два года и три месяца — как в деле из книги."
+          en: "Money stolen from defrauded pensioners went through your cards. Two years and three months — just like the case in the book."
+        evidence: ch09_i5
+      evidence: ch08_i8
+      outcome:
+        ru: "Два месяца всё шло отлично. Подработки за пару тысяч обходятся судимостью."
+        en: "Two months went perfectly. Side jobs worth a few thousand cost people a criminal record."
+    - id: refuse
+      text: {ru: "Отказаться: карта — только для себя", en: "Refuse: your card is for you alone"}
+      tag: wise
+      evidence: ch08_i8
+      outcome:
+        ru: "Аренда, передача или продажа своей карты незаконна сама по себе."
+        en: "Renting out, lending or selling your bank card is illegal in itself."
+
+- id: ch08_move_car
+  title: {ru: "Переставить машину", en: "Just move the car"}
+  min_age: 20
+  max_age: 70
+  category: legal
+  evidence: ch08_i7
+  narrative:
+    ru: |
+      Корпоратив, три бокала вина. Звонит сосед: ваша машина перекрыла выезд скорой. Надо
+      проехать пятьдесят метров до соседнего двора.
+    en: |
+      A work party, three glasses of wine. A neighbour calls: your car is blocking the ambulance
+      exit. You just need to drive fifty metres to the next yard.
+  choices:
+    - id: drive
+      text: {ru: "Пятьдесят метров — ерунда, переставлю сам", en: "Fifty metres is nothing, I'll move it myself"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.125 # game approximation
+        kind: prison
+        years: 1
+        delta_wealth: -50000
+        delta_sanity: -10
+        text:
+          ru: "Патруль стоял прямо у выезда. Лишение прав, уголовное дело за повторное — и запись в биографии."
+          en: "A patrol car was parked right at the exit. A lost licence, a criminal case — and a record that follows you."
+        evidence: ch08_i7
+      evidence: ch08_i7
+      outcome:
+        ru: "Пронесло. Пьяная езда — это лишение прав, а пьяное «ещё раз» — уголовная статья, и страховка не платит."
+        en: "Got away with it. Drink-driving costs your licence, a repeat costs a criminal case, and insurance won't pay."
+    - id: driver
+      text: {ru: "Вызвать трезвого водителя", en: "Call a sober driver service"}
+      tag: wise
+      cost_money: 1500
+      evidence: ch08_i7
+      outcome:
+        ru: "1500 рублей и десять минут ожидания."
+        en: "1,500 rubles and ten minutes of waiting."
+    - id: keys
+      text: {ru: "Отдать ключи непьющему коллеге", en: "Hand the keys to a sober colleague"}
+      tag: wise
+      evidence: ch08_i7
+      outcome:
+        ru: "Коллега переставил машину и забрал у вас кусок торта в качестве оплаты."
+        en: "A colleague moved the car and took a slice of cake as payment."
+
+- id: ch08_scam_call
+  title: {ru: "«Служба безопасности банка»", en: "\"Your bank's security department\""}
+  min_age: 25
+  max_age: 84
+  category: money
+  weight: 1.2
+  evidence: ch08_i3
+  requires: {min_wealth: 100000}
+  narrative:
+    ru: |
+      Вежливый мужчина называет вас по имени-отчеству и последние цифры карты: «С вашего счёта
+      пытаются вывести деньги. Срочно переведите всё на защищённый счёт, я продиктую».
+    en: |
+      A polite man knows your full name and the last digits of your card: "Someone is trying to
+      drain your account. Transfer everything to a protected account right now, I'll dictate it."
+  choices:
+    - id: hang_up
+      text: {ru: "Положить трубку и перезвонить по номеру на карте", en: "Hang up and call the number on the back of your card"}
+      tag: wise
+      cost_will: 1
+      evidence: ch08_i3
+      outcome:
+        ru: "Банк ни о каких попытках не знал. Звонят — кладите трубку, перезванивайте сами."
+        en: "The bank knew of no attempts. If they call you, hang up and call back yourself."
+    - id: transfer
+      text: {ru: "Скорее перевести, пока не украли", en: "Transfer quickly before it's stolen"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.95 # it is always a scam
+        kind: ruin
+        wealth_fraction: 0.7
+        delta_sanity: -20
+        text:
+          ru: "«Защищённый счёт» принадлежал мошенникам. Вы перевели всё, что было на счетах."
+          en: "The \"protected account\" belonged to scammers. You transferred everything you had."
+        evidence: ch08_i3
+      evidence: ch08_i3
+      outcome:
+        ru: "Связь прервалась на середине перевода. Повезло."
+        en: "The line dropped mid-transfer. Lucky."
+
+- id: ch08_punch
+  title: {ru: "Толчок в очереди", en: "A shove in the queue"}
+  min_age: 18
+  max_age: 55
+  category: legal
+  evidence: ch09_i19
+  narrative:
+    ru: |
+      Подвыпивший мужчина толкает вас в очереди к кассе и обзывает. Ваш кулак уже сжался сам.
+      Вокруг смотрят.
+    en: |
+      A tipsy man shoves you in the checkout queue and calls you names. Your fist is already
+      clenched. People are watching.
+  choices:
+    - id: hit
+      text: {ru: "Ударить первым — сам напросился", en: "Hit him first — he asked for it"}
+      tag: risky
+      delta_sanity: 4
+      stat_effects: {legal_prison_risk: {factor: 2.0, years: 3}}
+      catastrophe_check:
+        chance: 0.175 # game approximation
+        kind: ruin
+        delta_wealth: -1350000
+        delta_sanity: -15
+        text:
+          ru: "Он упал и сломал три ребра. Чтобы не было уголовного дела, вы заплатили ему 1 350 000 — как в деле из книги (113 000 юаней)."
+          en: "He fell and broke three ribs. To avoid a criminal case you paid him 1,350,000 — like the case in the book (113,000 yuan)."
+        evidence: ch09_i19
+      evidence: ch09_i19
+      outcome:
+        ru: "Ударивший первым почти всегда проигрывает: арест до 10 суток и штраф, а при травме — уголовное дело."
+        en: "Whoever strikes first almost always loses: up to ten days' detention and a fine, and a criminal case if someone is hurt."
+    - id: police
+      text: {ru: "Отойти и вызвать охрану", en: "Step back and call security"}
+      tag: wise
+      cost_will: 2
+      delta_sanity: -4
+      evidence: ch08_i10
+      outcome:
+        ru: "Охрана вывела его. Злость ушла к вечеру, судимости не появилось."
+        en: "Security escorted him out. The anger faded by evening, and no criminal record appeared."
+
+- id: ch08_blank_paper
+  title: {ru: "Подпись на пустом листе", en: "A signature on a blank sheet"}
+  min_age: 20
+  max_age: 65
+  category: legal
+  evidence: ch08_i17
+  narrative:
+    ru: |
+      Новый работодатель просит при оформлении подписать пустой лист «на всякий случай, для
+      бухгалтерии». Все новенькие подписывают.
+    en: |
+      Your new employer asks you to sign a blank sheet during onboarding "just in case, for
+      accounting". All the new hires sign.
+  choices:
+    - id: sign
+      text: {ru: "Подписать: все подписывают", en: "Sign: everyone does"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.125 # game approximation
+        kind: ruin
+        delta_wealth: -300000
+        delta_sanity: -10
+        text:
+          ru: "Через год на вашем листе появилось «заявление по собственному» и расписка о недостаче."
+          en: "A year later your sheet turned into a resignation letter and an admission of a stock shortfall."
+        evidence: ch08_i17
+      evidence: ch08_i17
+      outcome:
+        ru: "Подпись на пустом листе — это чек без суммы. В суде «я не читал» почти никогда не помогает."
+        en: "A signature on a blank sheet is a cheque without an amount. \"I didn't read it\" almost never works in court."
+    - id: refuse
+      text: {ru: "Отказаться и подписывать только заполненные документы", en: "Refuse and sign only filled-in documents"}
+      tag: wise
+      cost_will: 2
+      evidence: ch08_i17
+      outcome:
+        ru: "Кадровик поморщился, но лист убрал."
+        en: "The HR officer winced but put the sheet away."
+
+- id: ch08_nominee
+  title: {ru: "Директор на бумаге", en: "A director on paper"}
+  min_age: 20
+  max_age: 50
+  category: legal
+  evidence: ch08_i28
+  narrative:
+    ru: |
+      Знакомый предлагает 25 000 за то, чтобы записать фирму на ваш паспорт: «Ты ничего не
+      делаешь, я всем управляю. Просто числишься директором».
+    en: |
+      An acquaintance offers 25,000 to register a company in your name: "You do nothing, I run
+      everything. You're just the director on paper."
+  choices:
+    - id: accept
+      text: {ru: "Взять деньги — что тут такого", en: "Take the money — what's the harm"}
+      tag: risky
+      delta_wealth: 25000
+      set_flags: [nominee_director]
+      stat_effects: {legal_prison_risk: 2.0} # game approximation; "I was just a figurehead" is no defence (ch08_i28)
+      evidence: ch08_i28
+      outcome:
+        ru: "Паспорт вернули через день. Закон считает директором того, кто записан, а не того, кто управлял."
+        en: "You got your passport back the next day. The law treats the registered director as the one in charge."
+    - id: refuse
+      text: {ru: "Отказаться", en: "Refuse"}
+      tag: wise
+      evidence: ch08_i28
+      outcome:
+        ru: "«Подставное лицо» — не оправдание ни для налоговой, ни для суда."
+        en: "\"I was a figurehead\" is no excuse to the tax office or the court."
+
+- id: ch08_nominee_debts
+  title: {ru: "Повестка", en: "A summons"}
+  min_age: 22
+  max_age: 70
+  category: legal
+  weight: 4
+  evidence: ch08_i28
+  requires: {flags: [nominee_director], flag_years: {nominee_director: 2}}
+  narrative:
+    ru: |
+      Фирма, где вы «числились», набрала долгов перед поставщиками и не платила налоги. Знакомый
+      уехал. Повестки приходят на ваше имя.
+    en: |
+      The company you were "just listed" at ran up debts to suppliers and never paid its taxes.
+      The acquaintance has left the country. Summonses arrive in your name.
+  choices:
+    - id: lawyer
+      text: {ru: "Нанять адвоката и сотрудничать со следствием", en: "Hire a lawyer and cooperate with the investigation"}
+      tag: wise
+      cost_money: 150000
+      delta_sanity: -15
+      clear_flags: [nominee_director]
+      evidence: ch08_i5
+      outcome:
+        ru: "Год допросов. Субсидиарную ответственность снизили, но не сняли."
+        en: "A year of interrogations. Your personal liability was reduced, not removed."
+      delta_wealth: -400000
+    - id: ignore
+      text: {ru: "Не ходить: я тут ни при чём", en: "Ignore it: none of this is mine"}
+      tag: risky
+      clear_flags: [nominee_director]
+      catastrophe_check:
+        chance: 0.3 # game approximation
+        kind: prison
+        years: 2
+        wealth_fraction: 0.5
+        text:
+          ru: "Неявка превратилась в розыск. Суд не поверил, что вы ничего не знали."
+          en: "Not showing up turned into a warrant. The court didn't believe you knew nothing."
+        evidence: ch08_i28
+      evidence: ch08_i28
+      outcome:
+        ru: "Дело приостановили — до поры."
+        en: "The case was suspended — for now."
+
+- id: ch08_suitcase
+  title: {ru: "Чужой чемодан", en: "Someone else's suitcase"}
+  min_age: 18
+  max_age: 70
+  category: travel
+  evidence: ch08_i29
+  narrative:
+    ru: |
+      В аэропорту женщина с ребёнком просит: «У меня перевес, возьмите мою сумку к себе в
+      багаж, в прилёте отдадите». Сумка тяжёлая и закрыта на замок.
+    en: |
+      At the airport a woman with a child asks: "I'm over the limit, could you check my bag with
+      yours and give it back on arrival?" The bag is heavy and padlocked.
+  choices:
+    - id: help
+      text: {ru: "Помочь — жалко же", en: "Help — she looks desperate"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.05 # game approximation
+        kind: prison
+        years: 8
+        delta_sanity: -30
+        text:
+          ru: "Таможенная собака села у вашего чемодана. Доказывать, что вы не знали о содержимом, придётся вам."
+          en: "The customs dog sat down next to your suitcase. Proving you didn't know what was inside is now your job."
+        evidence: ch08_i29
+      evidence: ch08_i29
+      outcome:
+        ru: "В прилёте её уже ждали люди в штатском. Вас отпустили после трёх часов допроса."
+        en: "Plain-clothes officers were waiting for her on arrival. They let you go after three hours of questioning."
+    - id: refuse
+      text: {ru: "Вежливо отказать", en: "Politely refuse"}
+      tag: wise
+      cost_will: 1
+      evidence: ch08_i29
+      outcome:
+        ru: "Никогда не везите чужие вещи, о которых ничего не знаете."
+        en: "Never carry other people's things that you know nothing about."
+
+- id: ch07_training_loan
+  title: {ru: "Работа мечты, но сначала курсы", en: "Dream job, but first the course"}
+  min_age: 18
+  max_age: 35
+  category: work
+  evidence: ch07_i15
+  narrative:
+    ru: |
+      Кадровое агентство обещает работу с зарплатой 120 000. Условие — пройти платные курсы
+      за 90 000 в кредит, который оформят прямо в офисе.
+    en: |
+      A recruitment agency promises a job paying 120,000 a month. The condition: a paid course
+      for 90,000 on a loan they'll arrange right there in the office.
+  choices:
+    - id: sign
+      text: {ru: "Подписать кредит: окупится за месяц", en: "Sign the loan: it'll pay for itself in a month"}
+      tag: risky
+      delta_wealth: -90000
+      add_conditions: [microloan_debt]
+      evidence: ch07_i15
+      outcome:
+        ru: "Курсы — записи вебинаров. Работы нет. Кредит есть. «Кредиты на обучение» — признанная схема мошенничества."
+        en: "The course is recorded webinars. No job. The loan is real. \"Training loans\" are a recognised scam."
+    - id: leave
+      text: {ru: "Уйти: работодатель не берёт денег с соискателя", en: "Leave: employers don't charge applicants"}
+      tag: wise
+      evidence: ch07_i15
+      outcome:
+        ru: "Никаких залогов, удержания паспорта и «кредитов на обучение»."
+        en: "No deposits, no passport retention, no \"training loans\"."
+
+- id: ch05_payday_loan
+  title: {ru: "Займ до зарплаты", en: "A loan until payday"}
+  min_age: 18
+  max_age: 50
+  category: money
+  evidence: ch05_i7
+  requires: {not_conditions: [microloan_debt], max_wealth: 60000}
+  narrative:
+    ru: |
+      Телефон разбился, а новый стоит 80 000. Приложение микрофинансовой организации одобряет
+      займ за две минуты: «0% первые 7 дней!»
+    en: |
+      Your phone broke and a new one costs 80,000. A payday-loan app approves you in two
+      minutes: "0% for the first 7 days!"
+  choices:
+    - id: loan
+      text: {ru: "Взять займ и новый флагман", en: "Take the loan and the new flagship"}
+      tag: risky
+      add_conditions: [microloan_debt]
+      delta_sanity: 6
+      evidence: ch05_i7
+      outcome:
+        ru: "Через неделю 0% закончился. Ориентируйтесь только на годовую ставку — здесь она трёхзначная."
+        en: "The 0% ended after a week. Look only at the annual rate — here it has three digits."
+    - id: cheap
+      text: {ru: "Купить подержанный за 12 000 и копить", en: "Buy a used one for 12,000 and save up"}
+      tag: wise
+      cost_money: 12000
+      cost_will: 1
+      evidence: ch05_i23
+      outcome:
+        ru: "Камера хуже, звонит так же."
+        en: "Worse camera, calls just the same."
+
+- id: ch07_debt_spiral
+  title: {ru: "Коллекторы", en: "Debt collectors"}
+  min_age: 18
+  max_age: 70
+  category: money
+  weight: 3
+  repeatable: true
+  cooldown: 2
+  evidence: ch07_i23
+  requires: {conditions: [microloan_debt]}
+  narrative:
+    ru: |
+      Двенадцать звонков за утро, сообщения маме и начальнику. Долг вырос вдвое. В соцсетях
+      реклама: «Спишем долги и очистим кредитную историю за 30 000!»
+    en: |
+      Twelve calls this morning, messages to your mother and your boss. The debt has doubled.
+      An ad pops up: "We'll wipe your debts and clean your credit history for 30,000!"
+  choices:
+    - id: negotiate
+      text: {ru: "Самому позвонить кредитору и договориться о рассрочке", en: "Call the lender yourself and negotiate instalments"}
+      tag: wise
+      cost_will: 3
+      delta_wealth: -120000
+      remove_conditions: [microloan_debt]
+      evidence: ch07_i23
+      outcome:
+        ru: "Договорились на рассрочку. Тяжело, но звонки прекратились."
+        en: "You agreed an instalment plan. It's hard, but the calls stopped."
+    - id: cleaner
+      text: {ru: "Заплатить «чистильщикам кредитной истории»", en: "Pay the \"credit repair\" people"}
+      tag: risky
+      cost_money: 0
+      delta_wealth: -30000
+      evidence: ch07_i23
+      outcome:
+        ru: "Они пропали вместе с деньгами. Регулятор отдельно предупреждал о таких посредниках."
+        en: "They vanished with the money. The regulator specifically warned about such middlemen."
+    - id: new_loan
+      text: {ru: "Взять новый займ, чтобы закрыть старый", en: "Take a new loan to pay off the old one"}
+      tag: risky
+      delta_sanity: -10
+      delta_wealth: -40000
+      evidence: ch07_i23
+      outcome:
+        ru: "Теперь их два."
+        en: "Now there are two."
+
+- id: ch05_lottery
+  title: {ru: "Джекпот 500 миллионов", en: "A 500-million jackpot"}
+  min_age: 18
+  max_age: 84
+  category: money
+  repeatable: true
+  cooldown: 6
+  evidence: ch05_i5
+  narrative:
+    ru: |
+      Джекпот лотереи вырос до полумиллиарда. Коллеги скидываются на билеты каждую неделю, и вам
+      неловко быть единственным, кто не участвует.
+    en: |
+      The lottery jackpot has grown to half a billion. Colleagues chip in for tickets every week,
+      and you feel awkward being the only one left out.
+  choices:
+    - id: play
+      text: {ru: "Скидываться весь год по 500 в неделю", en: "Chip in 500 a week for the year"}
+      tag: risky
+      cost_money: 26000
+      delta_wealth: 13260
+      delta_sanity: 3
+      evidence: ch05_i5
+      outcome:
+        ru: "Выиграли пару раз по мелочи: в сумме 13 260 из 26 000. В лотерее на призы уходит около 51% выручки."
+        en: "A few small wins: 13,260 back out of 26,000. Lotteries pay out about 51% of sales as prizes."
+    - id: skip
+      text: {ru: "Не участвовать", en: "Stay out of it"}
+      tag: wise
+      delta_sanity: -1
+      evidence: ch05_i5
+      outcome:
+        ru: "Каждый рубль в лотерее в среднем возвращает 51 копейку."
+        en: "Every ruble spent on lottery tickets returns about 51 kopecks on average."
+
+- id: ch05_ponzi
+  title: {ru: "20% в месяц", en: "20% a month"}
+  min_age: 22
+  max_age: 80
+  category: money
+  evidence: ch05_i6
+  requires: {min_wealth: 150000}
+  narrative:
+    ru: |
+      Бывший одноклассник уже полгода получает «20% в месяц» на инвестиционной платформе и
+      показывает скриншоты выплат. «Заходи, пока набор открыт».
+    en: |
+      An old schoolmate has been earning "20% a month" on an investment platform for half a
+      year and shows screenshots of payouts. "Get in while it's still open."
+  choices:
+    - id: invest
+      text: {ru: "Вложить половину сбережений", en: "Put in half of your savings"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.9 # above 10% a year, expect to lose the principal (ch05_i6)
+        kind: ruin
+        wealth_fraction: 0.5
+        delta_sanity: -15
+        text:
+          ru: "Через три месяца платформа «на техобслуживании». Навсегда."
+          en: "Three months later the platform was \"under maintenance\". Forever."
+        evidence: ch05_i6
+      evidence: ch05_i6
+      outcome:
+        ru: "Вам повезло выйти до краха. Свыше 10% годовых — готовьтесь потерять всё."
+        en: "You were lucky to get out before the crash. Above 10% a year, expect to lose it all."
+    - id: index
+      text: {ru: "Купить широкий индексный фонд и не трогать", en: "Buy a broad index fund and leave it alone"}
+      tag: wise
+      cost_money: 100000
+      add_conditions: [index_investor]
+      evidence: ch05_i17
+      outcome:
+        ru: "Скучно, медленно, с низкими комиссиями. Через десять лет одноклассник будет спрашивать совета."
+        en: "Boring, slow, low fees. In ten years your schoolmate will be asking you for advice."
+    - id: nothing
+      text: {ru: "Оставить на вкладе", en: "Keep it in a deposit"}
+      tag: neutral
+      outcome:
+        ru: "Деньги на месте."
+        en: "The money stayed put."
+
+- id: ch05_crypto
+  title: {ru: "Криптоплатформа", en: "A crypto platform"}
+  min_age: 18
+  max_age: 60
+  category: money
+  evidence: ch05_i45
+  requires: {min_wealth: 200000}
+  narrative:
+    ru: |
+      Сосед купил стейблкоины через неизвестную платформу и «зарабатывает на арбитраже». Он
+      показывает, как перевести деньги через P2P-продавца.
+    en: |
+      A neighbour bought stablecoins on an unknown platform and is "making money on arbitrage".
+      He shows you how to send money through a P2P seller.
+  choices:
+    - id: buy
+      text: {ru: "Перевести 500 000", en: "Send 500,000"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.25 # game approximation
+        kind: ruin
+        delta_wealth: -500000
+        delta_sanity: -15
+        text:
+          ru: "Вывести деньги не получилось. Суд в похожем деле отказал: покупка признана недействительной, убытки — ваши."
+          en: "You couldn't withdraw. In a similar case the court refused: the purchase was void and the loss was the buyer's."
+        evidence: ch05_i45
+      evidence: ch05_i45
+      outcome:
+        ru: "Платформа пока работает. Пока."
+        en: "The platform is still running. For now."
+    - id: no
+      text: {ru: "Не связываться", en: "Stay away"}
+      tag: wise
+      evidence: ch05_i45
+      outcome:
+        ru: "Сосед через год перестал здороваться."
+        en: "A year later the neighbour stopped saying hello."
+
+- id: ch05_emergency_fund
+  title: {ru: "Премия", en: "The bonus"}
+  min_age: 22
+  max_age: 60
+  category: money
+  evidence: ch05_i27
+  requires: {not_conditions: [emergency_fund]}
+  narrative:
+    ru: |
+      Пришла годовая премия — 150 000. Друзья зовут в Таиланд, а на счету кроме неё ничего нет.
+    en: |
+      Your annual bonus arrived: 150,000. Friends are calling you to Thailand, and apart from the
+      bonus your account is empty.
+  choices:
+    - id: fund
+      text: {ru: "Отложить на отдельный счёт как подушку", en: "Put it in a separate emergency account"}
+      tag: wise
+      cost_will: 2
+      delta_wealth: 150000
+      add_conditions: [emergency_fund]
+      evidence: ch05_i27
+      outcome:
+        ru: "Подушка на 3–6 месяцев: если уволят или заболеете, не придётся брать в долг под 18%."
+        en: "Three to six months of cushion: if you lose your job or fall ill, no borrowing at 18%."
+    - id: trip
+      text: {ru: "Таиланд!", en: "Thailand!"}
+      tag: neutral
+      delta_sanity: 12
+      evidence: ch05_i27
+      outcome:
+        ru: "Две недели моря. Вернулись с загаром и пустым счётом."
+        en: "Two weeks by the sea. You came back tanned and broke."
+
+- id: ch12_business
+  title: {ru: "Своя кофейня", en: "Your own coffee shop"}
+  min_age: 25
+  max_age: 55
+  category: work
+  evidence: ch12_i1
+  requires: {min_wealth: 200000}
+  narrative:
+    ru: |
+      Вы давно мечтаете о своей кофейне. Банк готов дать кредит под залог квартиры, но просит
+      личное поручительство — ваше и супруга.
+    en: |
+      You've long dreamed of your own coffee shop. The bank will lend against your flat but wants
+      a personal guarantee — from you and your spouse.
+  choices:
+    - id: all_in
+      text: {ru: "Заложить квартиру и подписать поручительство", en: "Mortgage the flat and sign the guarantee"}
+      tag: risky
+      delta_sanity: 8
+      catastrophe_check:
+        chance: 0.25 # game approximation
+        kind: ruin
+        wealth_fraction: 0.9
+        delta_sanity: -25
+        text:
+          ru: "Через два года кофейня закрылась. Банк пришёл к вам лично — и к супругу тоже."
+          en: "Two years later the shop closed. The bank came for you personally — and for your spouse."
+        evidence: ch12_i2
+      evidence: ch12_i2
+      outcome:
+        ru: "Кофейня выжила, и вы — тоже. Но пару лет вы не спали."
+        en: "The shop survived, and so did you. But you didn't sleep for a couple of years."
+      delta_wealth: 300000
+    - id: small
+      text: {ru: "Начать с кофе-точки на деньги, которые не жалко потерять", en: "Start with a coffee cart on money you can afford to lose"}
+      tag: wise
+      cost_money: 150000
+      cost_will: 2
+      catastrophe_check:
+        chance: 0.2 # game approximation
+        kind: ruin
+        delta_sanity: -8
+        text: {ru: "Точка не пошла. Обидно, но квартира на месте.", en: "The cart didn't work out. Annoying, but the flat is still yours."}
+        evidence: ch12_i1
+      evidence: ch12_i1
+      outcome:
+        ru: "Точка окупилась за год. Теперь можно думать о второй."
+        en: "The cart paid for itself in a year. Now you can think about a second one."
+      delta_wealth: 260000
+    - id: dream
+      text: {ru: "Оставить мечтой", en: "Keep it a dream"}
+      tag: neutral
+      delta_sanity: -3
+      outcome:
+        ru: "Кофе вы теперь варите дома. Очень хороший."
+        en: "You brew coffee at home now. Very good coffee."
+
+- id: ch01_gambling
+  title: {ru: "Ставка, которая всё вернёт", en: "The bet that will win it all back"}
+  min_age: 18
+  max_age: 65
+  category: money
+  evidence: ch01_i37
+  requires: {not_conditions: [gambler]}
+  narrative:
+    ru: |
+      Реклама букмекера в каждом видео. Вы поставили на футбол и выиграли 15 000 за вечер.
+      Деньги ещё никогда не приходили так легко.
+    en: |
+      Bookmaker ads in every video. You bet on football and won 15,000 in one evening. Money has
+      never come so easily.
+  choices:
+    - id: more
+      text: {ru: "Поставить ещё — система работает", en: "Bet again — the system works"}
+      tag: risky
+      add_conditions: [gambler]
+      delta_wealth: 15000
+      evidence: ch01_i37
+      outcome:
+        ru: "Через полгода вы ставите ночами и занимаете у друзей «до выигрыша»."
+        en: "Six months later you're betting at night and borrowing from friends \"until the next win\"."
+    - id: stop
+      text: {ru: "Забрать выигрыш и удалить приложение", en: "Cash out and delete the app"}
+      tag: wise
+      cost_will: 2
+      delta_wealth: 15000
+      evidence: ch01_i37
+      outcome:
+        ru: "Лучший выигрыш — тот, после которого вы ушли."
+        en: "The best win is the one you walk away from."
+
+- id: ch01_gambling_debt
+  title: {ru: "Минус миллион", en: "Down a million"}
+  min_age: 19
+  max_age: 70
+  category: mind
+  weight: 3
+  repeatable: true
+  cooldown: 2
+  evidence: ch01_i37
+  requires: {conditions: [gambler]}
+  narrative:
+    ru: |
+      Долги — почти миллион, кредитки пусты, вы неделю не спите. Мысль «если меня не станет,
+      проблема исчезнет» приходит всё чаще.
+    en: |
+      Nearly a million in debt, the credit cards are maxed out, you haven't slept for a week. The
+      thought "if I'm gone, the problem goes away" comes more and more often.
+  choices:
+    - id: help
+      text: {ru: "Позвонить на линию помощи и отдать карты родным", en: "Call a helpline and hand your cards to family"}
+      tag: wise
+      cost_will: 3
+      remove_conditions: [gambler]
+      delta_sanity: 20
+      evidence: ch01_i37
+      outcome:
+        ru: "Стыдно, тяжело, но вы живы. У лечившихся от игромании риск самоубийства в 15 раз выше среднего."
+        en: "Shameful and hard, but you're alive. People treated for gambling problems have fifteen times the suicide risk."
+    - id: one_more
+      text: {ru: "Одна крупная ставка — и всё вернётся", en: "One big bet and it all comes back"}
+      tag: risky
+      delta_sanity: -15
+      catastrophe_check:
+        chance: 0.425 # game approximation
+        kind: ruin
+        delta_wealth: -400000
+        text: {ru: "Ставка не сыграла.", en: "The bet lost."}
+        evidence: ch01_i37
+      evidence: ch01_i37
+      outcome:
+        ru: "Выиграли. И тут же проиграли больше."
+        en: "You won. And immediately lost more."

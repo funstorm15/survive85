@@ -1,0 +1,451 @@
+# Chapter 13 — "Emergency situations: what to do first". Events about the
+# player's own body follow the matching risk modifier (weight_by).
+
+- id: ch13_heart_attack
+  title: {ru: "Тяжесть за грудиной", en: "Pressure in the chest"}
+  min_age: 40
+  max_age: 84
+  category: emergency
+  weight: 0.7
+  weight_by: {cardiovascular_risk: 1.5}
+  repeatable: true
+  cooldown: 6
+  evidence: ch13_i7
+  narrative:
+    ru: |
+      Двадцать минут назад грудь сдавило, будто на неё сел кто-то тяжёлый. Отдаёт в левую руку,
+      холодный пот. «Наверное, остеохондроз», — думаете вы.
+    en: |
+      Twenty minutes ago your chest tightened as if someone heavy sat on it. It spreads to your
+      left arm; you're in a cold sweat. "Probably just my back," you think.
+  choices:
+    - id: ambulance
+      text: {ru: "Сразу вызвать скорую и не вставать", en: "Call an ambulance right away and stay put"}
+      tag: wise
+      delta_health: -25
+      add_conditions: [heart_disease]
+      instant_death_check:
+        chance: 0.028 # 30-day mortality when treated within 55 minutes of arrival (ch13_i7)
+        cause: cardiovascular
+        death_reason: {ru: "Острый инфаркт миокарда", en: "Acute myocardial infarction"}
+        evidence: ch13_i7
+      evidence: ch13_i7
+      outcome:
+        ru: "Через 50 минут вы были в рентгеноперационной. Стент, неделя в больнице, таблетки на всю жизнь."
+        en: "Fifty minutes later you were in the cath lab. A stent, a week in hospital, pills for life."
+    - id: drive
+      text: {ru: "Самому доехать до больницы — так быстрее", en: "Drive yourself to hospital — it's faster"}
+      tag: risky
+      delta_health: -35
+      add_conditions: [heart_disease]
+      instant_death_check:
+        chance: 0.097 # 30-day mortality when treatment comes later than 55 minutes (ch13_i7)
+        cause: cardiovascular
+        death_reason: {ru: "Инфаркт за рулём по дороге в больницу", en: "A heart attack at the wheel on the way to hospital"}
+        evidence: ch13_i7
+      evidence: ch13_i7
+      outcome:
+        ru: "Вы потеряли сознание на парковке приёмного покоя. Каждая минута задержки — это погибшая мышца сердца."
+        en: "You blacked out in the hospital car park. Every minute of delay is more dead heart muscle."
+    - id: wait
+      text: {ru: "Выпить корвалол и полежать до утра", en: "Take some heart drops and lie down until morning"}
+      tag: risky
+      delta_health: -45
+      add_conditions: [heart_disease]
+      instant_death_check:
+        chance: 0.075 # game approximation: untreated, beyond the 9.7% of late treatment
+        cause: cardiovascular
+        death_reason: {ru: "Обширный инфаркт: скорую так и не вызвали", en: "A massive heart attack: nobody called an ambulance"}
+        evidence: ch13_i7
+      evidence: ch13_i7
+      outcome:
+        ru: "К утру отпустило. Кардиограмма через неделю показала рубец на полсердца."
+        en: "By morning it eased. An ECG a week later showed a scar across half your heart."
+
+- id: ch13_cpr
+  title: {ru: "Отец упал на кухне", en: "Dad collapsed in the kitchen"}
+  min_age: 25
+  max_age: 70
+  category: emergency
+  evidence: ch13_i1
+  narrative:
+    ru: |
+      Звук падения, потом тишина. Отец лежит на полу, не отвечает и не дышит — только странный
+      редкий всхлип. 79% остановок сердца случаются дома.
+    en: |
+      A thud, then silence. Your father is on the floor, unresponsive and not breathing — only a
+      strange, rare gasp. 79% of cardiac arrests happen at home.
+  choices:
+    - id: compress
+      text: {ru: "Крикнуть «звони 112!» и сразу начать давить на грудь", en: "Shout \"call 112!\" and start chest compressions at once"}
+      tag: wise
+      cost_will: 2
+      catastrophe_check:
+        chance: 0.839 # survival 16.1% with bystander CPR (ch13_i1)
+        kind: loss
+        delta_sanity: -25
+        text:
+          ru: "Вы давили двадцать минут до приезда бригады. Отца не спасли — но вы сделали всё, что могли."
+          en: "You did compressions for twenty minutes until the crew arrived. They couldn't save him — but you did all you could."
+        evidence: ch13_i1
+      evidence: ch13_i1
+      outcome:
+        ru: "Две компрессии в секунду, не останавливаясь. С сердечно-лёгочной реанимацией выживает 16,1% вместо 3,9%."
+        en: "Two compressions a second, without stopping. With CPR 16.1% survive instead of 3.9%."
+    - id: wait
+      text: {ru: "Вызвать скорую и ждать, боясь навредить", en: "Call an ambulance and wait, afraid to do harm"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.961 # survival 3.9% without bystander CPR (ch13_i1)
+        kind: loss
+        delta_sanity: -35
+        text:
+          ru: "Скорая приехала через 14 минут. Было поздно. Вы будете вспоминать эти минуты всю жизнь."
+          en: "The ambulance came in fourteen minutes. It was too late. You'll replay those minutes for the rest of your life."
+        evidence: ch13_i1
+      evidence: ch13_i1
+      outcome:
+        ru: "Чудо случилось: сердце запустили. Без реанимации до приезда врачей выживают 3,9%."
+        en: "A miracle: they restarted his heart. Without CPR before the crew arrives, 3.9% survive."
+
+- id: ch13_stroke
+  title: {ru: "Перекошенная улыбка", en: "A crooked smile"}
+  min_age: 40
+  max_age: 84
+  category: emergency
+  evidence: ch13_i3
+  narrative:
+    ru: |
+      Вечером за ужином у матери вдруг опускается угол рта, ложка выпадает из правой руки, речь
+      становится смазанной. «Просто устала, — говорит она. — Утром пройдёт».
+    en: |
+      At dinner one corner of your mother's mouth suddenly droops, the spoon falls from her right
+      hand and her speech slurs. "I'm just tired," she says. "It'll pass by morning."
+  choices:
+    - id: call
+      text: {ru: "Засечь время и немедленно вызвать скорую", en: "Note the time and call an ambulance immediately"}
+      tag: wise
+      catastrophe_check:
+        chance: 0.225 # game approximation; treatment within 3 h: ×1.75 chance of independence (ch13_i3)
+        kind: loss
+        delta_sanity: -15
+        text:
+          ru: "Тромболизис сделали вовремя, но правая рука так и не вернулась полностью."
+          en: "She got clot-busting treatment in time, but her right hand never fully recovered."
+        evidence: ch13_i3
+      evidence: ch13_i3
+      outcome:
+        ru: "Лекарство в первые 3 часа повышает шанс снова обходиться без посторонней помощи в 1,75 раза. Она снова сама ходит в магазин."
+        en: "Treatment within three hours makes regaining independence 1.75 times as likely. She walks to the shop on her own again."
+    - id: morning
+      text: {ru: "Уложить спать: утро вечера мудренее", en: "Put her to bed: things look better in the morning"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.45 # game approximation; after 4.5 h treatment makes almost no difference (ch13_i3)
+        kind: loss
+        delta_sanity: -30
+        delta_wealth: -150000
+        text:
+          ru: "Утром она не смогла встать. Сиделка, памперсы, речь не вернулась."
+          en: "In the morning she couldn't get up. A carer, nappies, and her speech never came back."
+        evidence: ch13_i3
+      evidence: ch13_i3
+      outcome:
+        ru: "Повезло: это была транзиторная атака, всё прошло само. Через 4,5 часа лечение почти ничего не меняет."
+        en: "Lucky: it was a transient attack that passed. After 4.5 hours treatment makes almost no difference."
+
+- id: ch13_bleeding
+  title: {ru: "Болгарка соскочила", en: "The grinder slipped"}
+  min_age: 18
+  max_age: 70
+  category: emergency
+  evidence: ch13_i12
+  narrative:
+    ru: |
+      Коллега в гараже вскрикивает: диск болгарки распорол предплечье. Кровь бьёт толчками,
+      все стоят и смотрят.
+    en: |
+      A colleague in the garage screams: the grinder disc has slashed his forearm. Blood spurts
+      in pulses and everyone just stares.
+  choices:
+    - id: press
+      text: {ru: "Пережать рану, наложить жгут выше и вызвать скорую", en: "Press on the wound, tie a tourniquet above it, call an ambulance"}
+      tag: wise
+      cost_will: 1
+      delta_sanity: 5
+      evidence: ch13_i12
+      outcome:
+        ru: "Хирург сказал, что жгут спас ему жизнь. 90% получивших жгут до шока выжили, после шока — 10%."
+        en: "The surgeon said the tourniquet saved his life. 90% of those tourniqueted before shock survived; after shock, 10%."
+    - id: towel
+      text: {ru: "Дать полотенце и везти в травмпункт на машине", en: "Hand him a towel and drive to A&E"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.15 # game approximation
+        kind: loss
+        delta_sanity: -20
+        text:
+          ru: "По дороге он потерял сознание. Руку спасли, но месяц реанимации и суд с работодателем."
+          en: "He lost consciousness on the way. They saved the arm, but a month in intensive care and a lawsuit followed."
+        evidence: ch13_i12
+      evidence: ch13_i12
+      outcome:
+        ru: "Довезли. Полотенце промокло насквозь за три минуты."
+        en: "You got him there. The towel was soaked through in three minutes."
+
+- id: ch13_dog_bite
+  title: {ru: "Бродячая собака", en: "A stray dog"}
+  min_age: 18
+  max_age: 84
+  category: emergency
+  evidence: ch13_i13
+  narrative:
+    ru: |
+      Во дворе собака без ошейника хватает вас за лодыжку. Кожа прокушена, неглубоко. Дворник
+      машет рукой: «Да она тут всех кусает, здоровая».
+    en: |
+      In the yard a collarless dog grabs your ankle. The skin is broken, not deeply. The janitor
+      shrugs: "She bites everyone, she's healthy."
+  choices:
+    - id: wash
+      text: {ru: "15 минут мыть с мылом и в тот же день — в травмпункт за прививкой", en: "Wash with soap for 15 minutes and get the rabies vaccine the same day"}
+      tag: wise
+      cost_money: 3000
+      cost_will: 1
+      evidence: ch13_i13
+      outcome:
+        ru: "Пять уколов по графику. После появления симптомов бешенство смертельно почти в 100% случаев."
+        en: "Five jabs on schedule. Once symptoms appear, rabies is almost 100% fatal."
+    - id: iodine
+      text: {ru: "Помазать йодом и забыть", en: "Dab on some iodine and forget it"}
+      tag: risky
+      instant_death_check:
+        chance: 0.005 # game approximation; rabies is ~100% fatal once symptomatic (ch13_i13)
+        cause: other
+        death_reason: {ru: "Бешенство после укуса бродячей собаки", en: "Rabies after a stray dog bite"}
+        evidence: ch13_i13
+      evidence: ch13_i13
+      outcome:
+        ru: "Ранка зажила. Вы ещё год вздрагивали при каждой головной боли."
+        en: "The wound healed. For a year you flinched at every headache."
+
+- id: ch13_burn
+  title: {ru: "Кипяток", en: "Boiling water"}
+  min_age: 18
+  max_age: 84
+  category: emergency
+  evidence: ch13_i14
+  narrative:
+    ru: |
+      Кастрюля с кипятком соскользнула с плиты прямо вам на ногу. Кожа краснеет на глазах.
+      Бабушка из соседней комнаты кричит: «Намажь зубной пастой!»
+    en: |
+      A pot of boiling water slides off the stove onto your leg. The skin reddens before your
+      eyes. Grandma shouts from the next room: "Put toothpaste on it!"
+  choices:
+    - id: cool
+      text: {ru: "20 минут под прохладной проточной водой", en: "Twenty minutes under cool running water"}
+      tag: wise
+      cost_will: 1
+      delta_health: -5
+      catastrophe_check:
+        chance: 0.06 # game approximation; ×0.6 vs not cooling (ch13_i14)
+        kind: injury
+        delta_health: -10
+        text: {ru: "Ожог всё же оказался глубоким: пересадка кожи.", en: "The burn was deep after all: a skin graft."}
+        evidence: ch13_i14
+      evidence: ch13_i14
+      outcome:
+        ru: "Охлаждение в первые 3 часа снижает потребность в пересадке кожи примерно до 60% от уровня без охлаждения."
+        en: "Cooling within three hours cuts the need for skin grafts to about 60% of the rate without it."
+    - id: paste
+      text: {ru: "Намазать пастой, как велит бабушка", en: "Toothpaste, as Grandma says"}
+      tag: risky
+      delta_health: -10
+      catastrophe_check:
+        chance: 0.1 # game approximation
+        kind: injury
+        delta_health: -15
+        text: {ru: "Глубокий ожог и пересадка кожи. Пасту из раны вычищали под наркозом.", en: "A deep burn and a skin graft. They cleaned the toothpaste out under anaesthesia."}
+        evidence: ch13_i14
+      evidence: ch13_i14
+      outcome:
+        ru: "Паста, соевый соус и масло только мешают. Лечится долго."
+        en: "Toothpaste, soy sauce and oil only get in the way. It took ages to heal."
+
+- id: ch13_carbon_monoxide
+  title: {ru: "Головная боль у всех сразу", en: "Everyone has a headache"}
+  min_age: 18
+  max_age: 84
+  category: emergency
+  evidence: ch13_i19
+  narrative:
+    ru: |
+      Зимний вечер на даче, топится газовый котёл. У вас и у гостей одновременно болит голова и
+      тошнит. Кто-то предлагает лечь подремать.
+    en: |
+      A winter evening at the dacha, the gas boiler is running. You and your guests all have a
+      headache and nausea at once. Someone suggests lying down for a nap.
+  choices:
+    - id: out
+      text: {ru: "Всех на улицу, звонить газовой службе оттуда", en: "Everyone outside, call the gas service from there"}
+      tag: wise
+      evidence: ch13_i19
+      outcome:
+        ru: "На морозе через десять минут всем полегчало — это и есть главный признак угарного газа."
+        en: "Ten minutes out in the cold and everyone felt better — the classic sign of carbon monoxide."
+    - id: valve
+      text: {ru: "Сначала зайти обратно и выключить котёл", en: "Go back in first to switch off the boiler"}
+      tag: risky
+      delta_health: -15
+      instant_death_check:
+        chance: 0.02 # game approximation; never go back inside (ch13_i19)
+        cause: liver
+        death_reason: {ru: "Отравление угарным газом", en: "Carbon monoxide poisoning"}
+        evidence: ch13_i19
+      evidence: ch13_i19
+      outcome:
+        ru: "Вы вышли шатаясь и упали в сугроб. В 2018 году в Китае от угарного газа погибли 11 523 человека."
+        en: "You staggered out and fell into a snowdrift. In 2018, 11,523 people died of carbon monoxide poisoning in China."
+    - id: nap
+      text: {ru: "Открыть форточку и прилечь", en: "Open a window and lie down"}
+      tag: risky
+      instant_death_check:
+        chance: 0.05 # game approximation
+        cause: liver
+        death_reason: {ru: "Отравление угарным газом во сне", en: "Carbon monoxide poisoning in their sleep"}
+        evidence: ch13_i19
+      evidence: ch13_i19
+      outcome:
+        ru: "Вас разбудил сосед, заметивший, что никто не отвечает на звонки. Повезло."
+        en: "A neighbour woke you after nobody answered the phone. You were lucky."
+
+- id: ch13_drowning
+  title: {ru: "Крик с реки", en: "A shout from the river"}
+  min_age: 18
+  max_age: 70
+  category: emergency
+  evidence: ch13_i25
+  narrative:
+    ru: |
+      Подросток в двадцати метрах от берега то исчезает под водой, то появляется. Вы хорошо
+      плаваете. На берегу пустые пластиковые бутылки и длинная ветка.
+    en: |
+      A teenager twenty metres out keeps going under and coming back up. You're a good swimmer.
+      On the bank lie empty plastic bottles and a long branch.
+  choices:
+    - id: reach
+      text: {ru: "Кричать, звонить 112, тянуть ветку и кидать бутылки", en: "Shout, call 112, reach with the branch, throw bottles"}
+      tag: wise
+      catastrophe_check:
+        chance: 0.175 # game approximation
+        kind: loss
+        delta_sanity: -15
+        text: {ru: "Он не дотянулся. Спасатели нашли его через час.", en: "He couldn't reach. Rescuers found him an hour later."}
+        evidence: ch13_i25
+      evidence: ch13_i25
+      outcome:
+        ru: "Он вцепился в бутылку, и вы подтянули его веткой. Тонущий инстинктивно топит спасателя."
+        en: "He grabbed a bottle and you pulled him in with the branch. A drowning person instinctively pulls the rescuer under."
+    - id: swim
+      text: {ru: "Прыгнуть в воду и плыть к нему", en: "Jump in and swim to him"}
+      tag: risky
+      instant_death_check:
+        chance: 0.075 # game approximation; rescuers who enter the water often drown too (ch13_i25)
+        cause: trauma
+        death_reason: {ru: "Утонул, спасая тонущего", en: "Drowned trying to save a drowning person"}
+        evidence: ch13_i25
+      evidence: ch13_i25
+      outcome:
+        ru: "Он вцепился вам в шею и потащил вниз. Вы выбрались чудом — вдвоём."
+        en: "He clamped onto your neck and dragged you down. By some miracle you both got out."
+
+- id: ch13_choking
+  title: {ru: "Кусок мяса", en: "A piece of meat"}
+  min_age: 18
+  max_age: 84
+  category: emergency
+  evidence: ch13_i26
+  narrative:
+    ru: |
+      Юбилей в ресторане. Дядя вдруг хватается за горло, лицо синеет, он не может ни кашлять,
+      ни говорить. Тётя стучит его по спине ладошкой.
+    en: |
+      An anniversary dinner. Your uncle suddenly clutches his throat, his face turns blue; he
+      can't cough or speak. Your aunt pats his back.
+  choices:
+    - id: heimlich
+      text: {ru: "Встать сзади: 5 ударов по спине, 5 толчков в живот", en: "Stand behind him: 5 back blows, 5 abdominal thrusts"}
+      tag: wise
+      delta_sanity: 6
+      evidence: ch13_i26
+      outcome:
+        ru: "На втором цикле кусок вылетел на скатерть. Дядя теперь зовёт вас на все праздники."
+        en: "On the second round the piece flew onto the tablecloth. Your uncle now invites you to every celebration."
+    - id: water
+      text: {ru: "Дать ему воды и звать официанта", en: "Give him water and call the waiter"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.25 # game approximation
+        kind: loss
+        delta_sanity: -25
+        text: {ru: "Скорая приехала через 12 минут. Слишком поздно.", en: "The ambulance came in twelve minutes. Too late."}
+        evidence: ch13_i26
+      evidence: ch13_i26
+      outcome:
+        ru: "Кусок проскочил сам. Если человек не может говорить, вода не поможет."
+        en: "The piece went down on its own. If someone can't speak, water won't help."
+
+- id: ch13_brawl
+  title: {ru: "Драка у бара", en: "A brawl outside the bar"}
+  min_age: 18
+  max_age: 45
+  category: legal
+  evidence: ch13_i37
+  narrative:
+    ru: |
+      У бара сцепились две компании. Ваш приятель уже в гуще, кто-то достаёт из багажника биту.
+      Остальные снимают на телефоны.
+    en: |
+      Two groups are fighting outside a bar. Your mate is already in the thick of it and someone
+      pulls a bat from a car boot. Everyone else is filming.
+  choices:
+    - id: leave
+      text: {ru: "Уйти и вызвать полицию из-за угла", en: "Walk away and call the police from round the corner"}
+      tag: wise
+      delta_sanity: -3
+      evidence: ch13_i37
+      outcome:
+        ru: "Приятель неделю не разговаривал. Потом его допрашивали как участника групповой драки."
+        en: "Your mate didn't speak to you for a week. Then the police questioned him as a participant in a group brawl."
+    - id: separate
+      text: {ru: "Влезть и разнять", en: "Wade in and break it up"}
+      tag: risky
+      delta_health: -10
+      stat_effects: {legal_prison_risk: {factor: 2.0, years: 3}}
+      catastrophe_check:
+        chance: 0.06 # game approximation; group brawl: up to 3 years, 3–10 with weapons (ch13_i37)
+        kind: prison
+        years: 2
+        delta_sanity: -10
+        text:
+          ru: "На видео видно, как вы толкаете парня с битой. Следователь называет это «участием в групповой драке»."
+          en: "The video shows you shoving the man with the bat. The investigator calls it \"taking part in a group brawl\"."
+        evidence: ch13_i37
+      evidence: ch13_i37
+      outcome:
+        ru: "Из «я разнимал» быстро получается «я дрался»."
+        en: "\"I was breaking it up\" quickly becomes \"I was fighting\"."
+    - id: film
+      text: {ru: "Остаться и снимать, как все", en: "Stay and film like everyone else"}
+      tag: risky
+      catastrophe_check:
+        chance: 0.04 # game approximation
+        kind: injury
+        delta_health: -25
+        text: {ru: "Бутылка, брошенная в толпу, попала вам в висок.", en: "A bottle thrown into the crowd hit you in the temple."}
+        evidence: ch13_i37
+      evidence: ch13_i37
+      outcome:
+        ru: "Чем больше зевак, тем больше хаоса — и тем вероятнее задеть случайного."
+        en: "The more onlookers, the messier it gets — and the likelier a bystander gets hurt."

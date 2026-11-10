@@ -1,0 +1,253 @@
+# Chapter 11 — "Common legal pitfalls for programmers and tech professionals"
+# and chapter 14 — "Account and information security". Prison terms follow the
+# cases quoted in the evidence.
+
+- id: ch11_cheats
+  title: {ru: "Чит для шутера", en: "A cheat for a shooter"}
+  min_age: 18
+  max_age: 40
+  category: legal
+  evidence: ch11_i2
+  requires: {flags: [techie]}
+  narrative:
+    ru: |
+      В дискорде предлагают написать «безобидный» аим-бот для популярного шутера: «Он только
+      читает экран, в память не лезет». Обещают долю с продаж подписок.
+    en: |
+      Someone on Discord asks you to write a "harmless" aimbot for a popular shooter: "It only
+      reads the screen, never touches memory." They promise a cut of subscription sales.
+  choices:
+    - id: write
+      text: {ru: "Написать: за три месяца можно поднять полмиллиона", en: "Write it: half a million in three months"}
+      tag: risky
+      delta_wealth: 500000
+      stat_effects: {legal_prison_risk: 3.0} # game approximation; 20 sales or 5,000 yuan already qualify (ch11_i2)
+      catastrophe_check:
+        chance: 0.15 # game approximation
+        kind: prison
+        years: 1
+        wealth_fraction: 0.4
+        text:
+          ru: "Издатель игры подал заявление. Год условно в книге — а у вас реальный срок и конфискация."
+          en: "The publisher filed a complaint. The book's case got a suspended year — you got real time and confiscation."
+        evidence: ch11_i2
+      evidence: ch11_i2
+      outcome:
+        ru: "Подписки продаются. Порог уголовной статьи — 20 продаж."
+        en: "Subscriptions are selling. The criminal threshold is 20 sales."
+    - id: refuse
+      text: {ru: "Отказаться — «ИИ-помощник» всё равно чит", en: "Refuse — an \"AI assistant\" is still a cheat"}
+      tag: wise
+      evidence: ch11_i2
+      outcome:
+        ru: "Задаёте себе один вопрос: подаст ли на меня заявление вендор или платформа? Здесь — да."
+        en: "Ask yourself one question: will the vendor or platform file a police report? Here, yes."
+
+- id: ch11_scraper
+  title: {ru: "Заказ на парсер", en: "A scraping gig"}
+  min_age: 20
+  max_age: 50
+  category: work
+  evidence: ch11_i4
+  requires: {flags: [techie]}
+  narrative:
+    ru: |
+      Клиент хочет парсер маркетплейса: обойти капчу и подписи запросов, собрать телефоны и
+      адреса продавцов. Бюджет щедрый.
+    en: |
+      A client wants a marketplace scraper: bypass the captcha and request signing, collect
+      sellers' phone numbers and addresses. A generous budget.
+  choices:
+    - id: full
+      text: {ru: "Сделать всё, как просят", en: "Build exactly what they want"}
+      tag: risky
+      delta_wealth: 400000
+      stat_effects: {legal_prison_risk: 2.5}
+      catastrophe_check:
+        chance: 0.1 # game approximation
+        kind: prison
+        years: 3
+        text:
+          ru: "Обход защиты плюс персональные данные: уже 50 записей о местоположении — «тяжкие обстоятельства»."
+          en: "Bypassing protection plus personal data: just 50 location records count as \"serious circumstances\"."
+        evidence: ch11_i4
+      evidence: ch11_i4
+      outcome:
+        ru: "Деньги пришли. База продавцов где-то всплыла."
+        en: "The money arrived. The seller database surfaced somewhere."
+    - id: public
+      text: {ru: "Только открытые страницы без логина и без личных данных", en: "Public pages only, no login, no personal data"}
+      tag: wise
+      delta_wealth: 120000
+      evidence: ch11_i4
+      outcome:
+        ru: "Клиент поторговался и согласился. Меньше денег, спокойный сон."
+        en: "The client haggled and agreed. Less money, quiet nights."
+
+- id: ch11_revenge
+  title: {ru: "Пароль админа всё ещё работает", en: "The admin password still works"}
+  min_age: 22
+  max_age: 60
+  category: legal
+  evidence: ch11_i6
+  requires: {flags: [techie]}
+  narrative:
+    ru: |
+      Вас уволили одним днём, без премии и «спасибо». Вечером вы замечаете: доступ к продовой
+      базе никто не отозвал. Курсор мигает в консоли.
+    en: |
+      You were fired on the spot, no bonus, no thank-you. That evening you notice nobody revoked
+      your production database access. The cursor blinks in the console.
+  choices:
+    - id: drop
+      text: {ru: "DROP DATABASE. Пусть знают", en: "DROP DATABASE. Let them learn"}
+      tag: risky
+      delta_sanity: 8
+      catastrophe_check:
+        chance: 0.35 # game approximation; logs survive, as in the book's case
+        kind: prison
+        years: 3
+        delta_wealth: -1500000
+        text:
+          ru: "Логи сохранились на резервном сервере. Удаление данных с тяжкими последствиями — до пяти лет."
+          en: "The logs survived on a backup server. Deleting data with serious consequences means up to five years."
+        evidence: ch11_i6
+      evidence: ch11_i6
+      outcome:
+        ru: "Компания три дня лежала. Следствие пока ищет виновного."
+        en: "The company was down for three days. Investigators are still looking for the culprit."
+    - id: code
+      text: {ru: "Тихо скачать исходники «для портфолио»", en: "Quietly download the source code \"for my portfolio\""}
+      tag: risky
+      stat_effects: {legal_prison_risk: 2.5}
+      catastrophe_check:
+        chance: 0.125 # game approximation
+        kind: prison
+        years: 5
+        text:
+          ru: "Код всплыл у вашего нового работодателя. Пять лет и штраф — как в деле из книги."
+          en: "The code turned up at your new employer. Five years and a fine — as in the book's case."
+        evidence: ch11_i7
+      evidence: ch11_i7
+      outcome:
+        ru: "Исходники лежат в личном облаке. Код, написанный на работе, принадлежит компании."
+        en: "The source sits in your personal cloud. Code written on the job belongs to the company."
+    - id: report
+      text: {ru: "Написать в ИТ: «отзовите мои доступы»", en: "Email IT: \"please revoke my access\""}
+      tag: wise
+      cost_will: 2
+      evidence: ch11_i6
+      outcome:
+        ru: "Бывший коллега поблагодарил. Пароли компании не означают права пользоваться ими после ухода."
+        en: "A former colleague thanked you. Company passwords don't give you the right to use them after you leave."
+
+- id: ch11_pentest
+  title: {ru: "Дырка в чужом сайте", en: "A hole in someone else's site"}
+  min_age: 18
+  max_age: 45
+  category: legal
+  evidence: ch11_i9
+  requires: {flags: [techie]}
+  narrative:
+    ru: |
+      Вы случайно нашли SQL-инъекцию на сайте крупной сети клиник. Хочется выгрузить таблицу
+      пользователей — чтобы доказать, что уязвимость настоящая.
+    en: |
+      You stumbled on an SQL injection in a big clinic chain's website. You want to dump the user
+      table — to prove the vulnerability is real.
+  choices:
+    - id: dump
+      text: {ru: "Выгрузить таблицу и написать им с доказательством", en: "Dump the table and email them the proof"}
+      tag: risky
+      stat_effects: {legal_prison_risk: 2.0}
+      catastrophe_check:
+        chance: 0.175 # game approximation; 500 account records already qualify (ch11_i9)
+        kind: prison
+        years: 2
+        text:
+          ru: "Клиника ответила заявлением в полицию. Благие намерения статья не учитывает."
+          en: "The clinic answered with a police report. The statute doesn't care about good intentions."
+        evidence: ch11_i9
+      evidence: ch11_i9
+      outcome:
+        ru: "Вам сухо ответили «спасибо». Выгрузка одной таблицы часто разом превышает 500 учётных записей."
+        en: "They replied with a dry \"thank you\". Dumping one table often exceeds 500 accounts in a single go."
+    - id: report
+      text: {ru: "Сообщить через официальный канал, ничего не выгружая", en: "Report through the official channel without extracting anything"}
+      tag: wise
+      evidence: ch11_i9
+      outcome:
+        ru: "Через месяц дыру закрыли, вам прислали благодарность."
+        en: "A month later the hole was closed and they sent you a thank-you note."
+
+- id: ch14_2fa
+  title: {ru: "Один пароль на всё", en: "One password for everything"}
+  min_age: 18
+  max_age: 80
+  category: money
+  evidence: ch14_i1
+  requires: {not_flags: [has_2fa, no_2fa]}
+  narrative:
+    ru: |
+      У вас один пароль на почту, банк и маркетплейсы — дата рождения кота. Банк в очередной раз
+      предлагает включить подтверждение входа в приложении.
+    en: |
+      You use one password for email, banking and shopping — your cat's birthday. The bank once
+      again suggests enabling login confirmation in its app.
+  choices:
+    - id: enable
+      text: {ru: "Включить двухфакторку везде и отдельный пароль на почту", en: "Enable two-factor everywhere and a separate email password"}
+      tag: wise
+      cost_will: 1
+      set_flags: [has_2fa]
+      evidence: ch14_i1
+      outcome:
+        ru: "Подтверждение входа на телефоне блокирует больше девяти из десяти фишинговых взломов."
+        en: "A confirmation pop-up on your phone blocks more than nine in ten phishing takeovers."
+    - id: later
+      text: {ru: "Потом. Неудобно каждый раз подтверждать", en: "Later. Confirming every time is annoying"}
+      tag: risky
+      set_flags: [no_2fa]
+      evidence: ch14_i1
+      outcome:
+        ru: "Удобно. Пока удобно."
+        en: "Convenient. For now."
+
+- id: ch14_hacked
+  title: {ru: "Чужой вход", en: "Someone else logged in"}
+  min_age: 19
+  max_age: 84
+  category: money
+  weight: 2
+  evidence: ch14_i1
+  requires: {flags: [no_2fa], flag_years: {no_2fa: 2}}
+  narrative:
+    ru: |
+      Ночью пришло письмо «Вход с нового устройства». Утром почта захвачена, с маркетплейса
+      ушли заказы, а друзьям пишут от вашего имени: «Срочно займи до вечера».
+    en: |
+      At night an email arrived: "New device login". By morning your email is hijacked, orders
+      have gone out from your shopping account and friends are getting "lend me some money
+      until tonight" messages from you.
+  choices:
+    - id: recover
+      text: {ru: "Блокировать карты, восстанавливать доступ, включить 2FA", en: "Freeze cards, recover access, turn on 2FA"}
+      tag: wise
+      cost_will: 2
+      delta_wealth: -60000
+      delta_sanity: -8
+      clear_flags: [no_2fa]
+      set_flags: [has_2fa]
+      evidence: ch14_i1
+      outcome:
+        ru: "Неделя звонков в поддержку и минус 60 000. Теперь всё на двух факторах."
+        en: "A week of support calls and 60,000 gone. Everything is on two factors now."
+    - id: ignore
+      text: {ru: "Сменить пароль на другой день рождения", en: "Change the password to another birthday"}
+      tag: risky
+      delta_wealth: -150000
+      delta_sanity: -12
+      evidence: ch14_i1
+      outcome:
+        ru: "Через месяц всё повторилось."
+        en: "A month later it all happened again."

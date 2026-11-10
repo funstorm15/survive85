@@ -1,0 +1,639 @@
+# Chapter 2 — "Avoid a slow death": tobacco, alcohol, food, movement, sleep,
+# blood pressure. Most effects are lasting conditions (data/conditions/02_lifestyle.yaml).
+
+- id: ch02_first_cigarette
+  title: {ru: "Перекур", en: "The smoke break"}
+  min_age: 18
+  max_age: 26
+  category: chronic
+  weight: 3
+  evidence: ch02_i1
+  requires: {not_conditions: [smoker, ex_smoker]}
+  narrative:
+    ru: |
+      Все важные разговоры на новой работе происходят в курилке: там решают, кого взять в
+      проект и кто идёт в отпуск в августе. Коллега протягивает пачку: «Будешь?»
+    en: |
+      Every important conversation at your new job happens in the smoking area: who joins the
+      project, who gets August off. A colleague holds out a pack: "Want one?"
+  choices:
+    - id: smoke
+      text: {ru: "Взять сигарету. Одна ничего не решит", en: "Take one. A single cigarette changes nothing"}
+      tag: risky
+      add_conditions: [smoker]
+      delta_sanity: 3
+      evidence: ch02_i1
+      outcome:
+        ru: "Одна, потом ещё одна. Через полгода вы покупаете пачку в день."
+        en: "One, then another. Six months later you're buying a pack a day."
+    - id: tea
+      text: {ru: "Ходить с ними, но с чаем", en: "Go along, but with a cup of tea"}
+      tag: wise
+      cost_will: 1
+      # The life table averages smokers and non-smokers. With ~25% smokers at
+      # the smoker modifiers (2.6, 1.9), a never-smoker sits at 1/(0.75+0.25×2.6)
+      # ≈ 0.71 for cancer and 1/(0.75+0.25×1.9) ≈ 0.82 for the heart; rounded up
+      # to stay conservative.
+      stat_effects: {oncology_risk: 0.78, cardiovascular_risk: 0.86}
+      evidence: ch02_i1
+      outcome:
+        ru: "В курилке вы стали «тем, кто с чаем». Курильщики в среднем теряют больше 10 лет жизни."
+        en: "You became \"the one with the tea\". Smokers lose more than ten years of life on average."
+
+- id: ch02_quit
+  title: {ru: "Бросить курить", en: "Quitting"}
+  min_age: 19
+  max_age: 80
+  category: chronic
+  weight: 2
+  repeatable: true
+  cooldown: 3
+  evidence: ch02_i3
+  requires: {conditions: [smoker]}
+  narrative:
+    ru: |
+      Утренний кашель уже не проходит до обеда, по лестнице на пятый этаж вы поднимаетесь с
+      остановкой. Вы в который раз обещаете себе бросить.
+    en: |
+      The morning cough now lasts until lunch, and you stop for breath on the way to the fifth
+      floor. Once again you promise yourself you'll quit.
+  choices:
+    - id: meds
+      text: {ru: "Назначить дату, пойти к врачу за варениклином", en: "Set a quit date and see a doctor for varenicline"}
+      tag: wise
+      cost_money: 12000
+      cost_will: 3
+      remove_conditions: [smoker]
+      add_conditions: [ex_smoker]
+      evidence: ch02_i3
+      outcome:
+        ru: "С лекарством шансы бросить больше чем вдвое выше, чем «на силе воли». Сработало."
+        en: "With medication the odds of quitting more than double compared with willpower alone. It worked."
+      delta_health: 5
+    - id: willpower
+      text: {ru: "Бросить на силе воли, постепенно уменьшая", en: "Quit on willpower, cutting down gradually"}
+      tag: neutral
+      cost_will: 3
+      delta_sanity: -6
+      evidence: ch02_i3
+      outcome:
+        ru: "Через три недели вы снова курите пачку. Большинству одна сила воли не помогает."
+        en: "Three weeks later you're back to a pack a day. For most people willpower alone doesn't work."
+    - id: vape
+      text: {ru: "Перейти на одноразовые электронки", en: "Switch to disposable vapes"}
+      tag: neutral
+      cost_money: 8000
+      evidence: ch02_i1
+      outcome:
+        ru: "Теперь вы курите и сигареты, и вейп. Курильщик с двумя привычками вместо одной."
+        en: "Now you smoke both cigarettes and a vape. A smoker with two habits instead of one."
+    - id: later
+      text: {ru: "Не сейчас. Слишком много стресса", en: "Not now. Too much stress"}
+      tag: risky
+      evidence: ch02_i1
+      outcome:
+        ru: "Бросившие до 40 убирают около 90% лишнего риска. Часы тикают."
+        en: "Quitting before 40 removes about 90% of the excess risk. The clock is ticking."
+
+- id: ch02_sugary_drinks
+  title: {ru: "Холодильник с газировкой", en: "The soda fridge"}
+  min_age: 18
+  max_age: 45
+  category: chronic
+  evidence: ch02_i7
+  requires: {not_conditions: [sugary_drinks]}
+  narrative:
+    ru: |
+      В офисе поставили холодильник с бесплатной газировкой. К трём часам дня без банки колы
+      вы уже не соображаете.
+    en: |
+      The office installed a fridge of free soda. By 3 p.m. you can't think without a can of cola.
+  choices:
+    - id: cola
+      text: {ru: "Две-три банки в день — бесплатно же", en: "Two or three cans a day — it's free"}
+      tag: risky
+      add_conditions: [sugary_drinks]
+      evidence: ch02_i7
+      outcome:
+        ru: "Пьющие больше двух сладких напитков в день умирают примерно на 20% чаще."
+        en: "People who drink over two sugary drinks a day die about 20% more often."
+      death_reasons:
+        cardiovascular: {ru: "Инфаркт на фоне диабета 2 типа", en: "A heart attack on top of type 2 diabetes"}
+    - id: zero
+      text: {ru: "Пить только «зеро» без сахара", en: "Drink only sugar-free \"zero\""}
+      tag: risky
+      stat_effects: {cardiovascular_risk: 1.15} # HR 1.26 all-cause for 2+ sugar-free drinks a day, mostly cardiometabolic
+      evidence: ch02_i7
+      outcome:
+        ru: "Замена на «зеро» не помогает: у пьющих два и больше таких напитка в день риск смерти на 25% выше."
+        en: "Switching to \"zero\" doesn't help: two or more a day carry a 25% higher risk of death."
+    - id: water
+      text: {ru: "Поставить на стол бутылку воды", en: "Keep a bottle of water on the desk"}
+      tag: wise
+      cost_will: 1
+      evidence: ch02_i7
+      outcome:
+        ru: "Первую неделю тянуло к холодильнику. Потом прошло."
+        en: "For the first week you kept drifting to the fridge. Then it passed."
+
+- id: ch02_potassium_salt
+  title: {ru: "Солонка", en: "The salt shaker"}
+  min_age: 40
+  max_age: 84
+  category: chronic
+  evidence: ch02_i9
+  requires: {not_conditions: [potassium_salt]}
+  narrative:
+    ru: |
+      Вы солите суп, не пробуя. В магазине рядом с обычной солью стоит «пониженного
+      содержания натрия» — с калием, чуть дороже и чуть горьковатая.
+    en: |
+      You salt your soup without tasting it. In the shop, next to regular salt, there's a
+      low-sodium version with potassium — slightly pricier, slightly bitter.
+  choices:
+    - id: switch
+      text: {ru: "Перейти на калиевую соль", en: "Switch to potassium salt"}
+      tag: wise
+      cost_money: 600
+      add_conditions: [potassium_salt]
+      evidence: ch02_i9
+      outcome:
+        ru: "Через неделю вкус стал привычным. Повторный инсульт на 14% реже, смерть за 5 лет на 12% реже."
+        en: "After a week you stopped noticing. 14% fewer repeat strokes, 12% fewer deaths within five years."
+    - id: keep
+      text: {ru: "Оставить обычную: соль как соль", en: "Keep the regular one: salt is salt"}
+      tag: neutral
+      evidence: ch02_i9
+      outcome:
+        ru: "Борщ как у мамы."
+        en: "Soup just like mum's."
+
+- id: ch02_commute
+  title: {ru: "Дорога на работу", en: "The commute"}
+  min_age: 22
+  max_age: 70
+  category: chronic
+  weight: 2
+  evidence: ch02_i11
+  requires: {not_conditions: [active, sedentary]}
+  narrative:
+    ru: |
+      До работы три километра. Можно идти пешком сорок минут, можно ехать на машине десять
+      — и потом ещё пятнадцать искать парковку.
+    en: |
+      Work is three kilometres away. Forty minutes on foot, or ten minutes by car — plus fifteen
+      looking for a parking space.
+  choices:
+    - id: walk
+      text: {ru: "Ходить пешком и набирать 7–8 тысяч шагов", en: "Walk and get 7–8 thousand steps"}
+      tag: wise
+      cost_will: 2
+      cost_time: 250
+      add_conditions: [active]
+      evidence: ch02_i11
+      outcome:
+        ru: "При 7800 шагах в день риск смерти примерно на 40% ниже, чем при 3500."
+        en: "At 7,800 steps a day the risk of death is about 40% lower than at 3,500."
+    - id: car
+      text: {ru: "Машина: от двери до двери", en: "The car: door to door"}
+      tag: risky
+      cost_money: 30000
+      add_conditions: [sedentary]
+      evidence: ch02_i17
+      outcome:
+        ru: "Подъезд — машина — стул — машина — диван. Шагомер показывает 2100."
+        en: "Doorstep, car, chair, car, sofa. The step counter says 2,100."
+
+- id: ch02_sitting
+  title: {ru: "Восемь часов за монитором", en: "Eight hours at the monitor"}
+  min_age: 22
+  max_age: 65
+  category: work
+  evidence: ch02_i17
+  requires: {conditions: [sedentary]}
+  narrative:
+    ru: |
+      Спина ноет, шея хрустит. Часы на руке в который раз напоминают «пора размяться», и вы
+      в который раз смахиваете уведомление.
+    en: |
+      Your back aches and your neck cracks. Your watch says "time to move" once more, and once
+      more you swipe it away.
+  choices:
+    - id: move
+      text: {ru: "Вставать каждый час и добрать час активности вечером", en: "Get up every hour and add an hour of activity in the evening"}
+      tag: wise
+      cost_will: 3
+      cost_time: 300
+      remove_conditions: [sedentary]
+      add_conditions: [active]
+      evidence: ch02_i17
+      outcome:
+        ru: "60–75 минут умеренной активности в день почти полностью гасят вред долгого сидения."
+        en: "60–75 minutes of moderate activity a day largely cancel out the harm of long sitting."
+    - id: ignore
+      text: {ru: "Дедлайн. Разомнусь в отпуске", en: "Deadline. I'll stretch on holiday"}
+      tag: risky
+      delta_health: -3
+      evidence: ch02_i17
+      outcome:
+        ru: "Больше всех сидящие умирают в 2,6 раза чаще меньше всех сидящих."
+        en: "People who sit the most die 2.6 times as often as those who sit the least."
+      death_reasons:
+        cardiovascular: {ru: "Тромбоэмболия и инфаркт на фоне сидячей работы", en: "Embolism and heart attack after years at a desk"}
+
+- id: ch02_sleep
+  title: {ru: "Ещё одна серия", en: "One more episode"}
+  min_age: 18
+  max_age: 50
+  category: chronic
+  weight: 1.5
+  evidence: ch02_i13
+  requires: {not_conditions: [short_sleep]}
+  narrative:
+    ru: |
+      Час ночи, автозапуск следующей серии через 5… 4… 3… Будильник стоит на 6:40. В выходные
+      вы обычно «отсыпаетесь» до обеда.
+    en: |
+      1 a.m., next episode autoplays in 5… 4… 3… The alarm is set for 6:40. At weekends you
+      usually "catch up" until noon.
+  choices:
+    - id: binge
+      text: {ru: "Досмотреть сезон, отоспаться в субботу", en: "Finish the season, catch up on Saturday"}
+      tag: risky
+      add_conditions: [short_sleep]
+      delta_sanity: 4
+      evidence: ch02_i13
+      outcome:
+        ru: "Чем рваней режим, тем выше смертность. Регулярность сна важнее количества часов."
+        en: "The more irregular the schedule, the higher the mortality. Regularity matters more than hours."
+    - id: bed
+      text: {ru: "Спать в одно и то же время, 7 часов", en: "Same bedtime every night, seven hours"}
+      tag: wise
+      cost_will: 2
+      delta_sanity: 4
+      evidence: ch02_i13
+      outcome:
+        ru: "У спящих регулярнее всех смертность на 20–50% ниже, чем у самых нерегулярных."
+        en: "The most regular sleepers have 20–50% lower mortality than the least regular."
+
+- id: ch02_fix_sleep
+  title: {ru: "Глаза слипаются за рулём", en: "Eyes closing at the wheel"}
+  min_age: 19
+  max_age: 70
+  category: chronic
+  evidence: ch02_i13
+  requires: {conditions: [short_sleep]}
+  narrative:
+    ru: |
+      Вы поймали себя на том, что не помните последние два километра дороги. Кофе уже не
+      помогает, днём всё раздражает.
+    en: |
+      You realise you don't remember the last two kilometres of road. Coffee no longer helps and
+      everything irritates you during the day.
+  choices:
+    - id: schedule
+      text: {ru: "Телефон из спальни, отбой в 23:00 даже в выходные", en: "Phone out of the bedroom, lights out at 11 even at weekends"}
+      tag: wise
+      cost_will: 3
+      remove_conditions: [short_sleep]
+      delta_sanity: 8
+      evidence: ch02_i13
+      outcome:
+        ru: "Через месяц вы впервые за годы проснулись раньше будильника."
+        en: "A month later you woke before the alarm for the first time in years."
+    - id: energy
+      text: {ru: "Энергетики и кофе до вечера", en: "Energy drinks and coffee until evening"}
+      tag: risky
+      cost_money: 15000
+      delta_health: -4
+      instant_death_check:
+        chance: 0.0025 # game approximation: microsleep while driving
+        scale_by: [trauma_accident_risk]
+        cause: trauma
+        death_reason: {ru: "Уснул за рулём после нескольких лет недосыпа", en: "Fell asleep at the wheel after years of short sleep"}
+        evidence: ch02_i13
+      evidence: ch02_i13
+      outcome:
+        ru: "Работает. Пока работает."
+        en: "It works. For now."
+
+- id: ch02_drinking
+  title: {ru: "Пятничная традиция", en: "The Friday tradition"}
+  min_age: 18
+  max_age: 60
+  category: chronic
+  weight: 2
+  evidence: ch02_i19
+  requires: {not_conditions: [heavy_drinker]}
+  narrative:
+    ru: |
+      Каждую пятницу отдел идёт в бар, и «по одной» превращается в шесть. Отказываться
+      неловко: на этих посиделках решаются повышения.
+    en: |
+      Every Friday the team goes to the bar and "just one" becomes six. Saying no is awkward:
+      promotions get decided at these evenings.
+  choices:
+    - id: keep_up
+      text: {ru: "Не отставать от коллектива", en: "Keep pace with the team"}
+      tag: risky
+      add_conditions: [heavy_drinker]
+      delta_sanity: 5
+      evidence: ch02_i19
+      outcome:
+        ru: "Пятница, суббота, «пиво под футбол» в среду. Больше 350 г спирта в неделю — минус 4–5 лет жизни."
+        en: "Friday, Saturday, \"a beer with the match\" on Wednesday. Over 350 g of alcohol a week costs four to five years of life."
+    - id: one
+      text: {ru: "Один бокал и домой", en: "One glass and home"}
+      tag: neutral
+      cost_will: 1
+      stat_effects: {toxicology_liver_risk: 0.92} # population mix: ~15% heavy drinkers at ×2.4 → light drinker ≈ 1/1.21, halved for still drinking
+      evidence: ch02_i19
+      outcome:
+        ru: "Вы остаётесь в компании, но уходите первым. Самое здоровое количество алкоголя — ноль."
+        en: "You stay in the circle but leave first. The healthiest amount of alcohol is none."
+    - id: lemonade
+      text: {ru: "Ходить, но пить лимонад", en: "Go along, but drink lemonade"}
+      tag: wise
+      cost_will: 2
+      stat_effects: {toxicology_liver_risk: 0.83} # population mix: 1/(0.85+0.15×2.4) ≈ 0.83
+      evidence: ch02_i19
+      outcome:
+        ru: "Сначала шутили, потом привыкли. Вы единственный, кто помнит, о чём договорились."
+        en: "They joked at first, then got used to it. You're the only one who remembers what was agreed."
+
+- id: ch02_drink_less
+  title: {ru: "Анализы печени", en: "Liver tests"}
+  min_age: 20
+  max_age: 80
+  category: chronic
+  weight: 2
+  repeatable: true
+  cooldown: 4
+  evidence: ch02_i21
+  requires: {conditions: [heavy_drinker]}
+  narrative:
+    ru: |
+      Терапевт смотрит на ваши печёночные ферменты и спрашивает, сколько вы пьёте в неделю.
+      Вы впервые честно складываете бутылки — и цифра вам не нравится.
+    en: |
+      The GP looks at your liver enzymes and asks how much you drink a week. For the first time
+      you honestly add up the bottles — and don't like the number.
+  choices:
+    - id: plan
+      text: {ru: "Вести счёт и вместе с врачом поставить цель", en: "Keep a tally and set a goal with the doctor"}
+      tag: wise
+      cost_will: 4
+      remove_conditions: [heavy_drinker]
+      delta_health: 6
+      evidence: ch02_i21
+      outcome:
+        ru: "Тяжелее всего было первые два месяца. Короткий разговор с врачом в среднем срезает 20 г спирта в неделю — вы срезали больше."
+        en: "The first two months were the hardest. A short talk with a doctor cuts about 20 g a week on average — you cut more."
+    - id: deny
+      text: {ru: "«Все так пьют». Сменить врача", en: "\"Everybody drinks like this.\" Change doctors"}
+      tag: risky
+      delta_health: -4
+      evidence: ch02_i19
+      outcome:
+        ru: "Новый врач анализы не смотрел. Печень посмотрела."
+        en: "The new doctor didn't look at the tests. Your liver did."
+
+- id: ch02_hot_tea
+  title: {ru: "Чай с огня", en: "Tea straight off the boil"}
+  min_age: 18
+  max_age: 75
+  category: chronic
+  evidence: ch02_i30
+  requires: {not_conditions: [hot_tea]}
+  narrative:
+    ru: |
+      Вы пьёте чай только кипятком, «чтобы пробирало», и смеётесь над теми, кто ждёт, пока
+      остынет. Губы давно привыкли.
+    en: |
+      You drink tea only scalding, "so it hits the spot", and laugh at people who wait for it to
+      cool. Your lips got used to it long ago.
+  choices:
+    - id: hot
+      text: {ru: "Пить как пил — сразу из чайника", en: "Keep drinking it straight from the kettle"}
+      tag: risky
+      add_conditions: [hot_tea]
+      evidence: ch02_i30
+      outcome:
+        ru: "Очень горячий чай повышает риск рака пищевода в 8 раз, просто горячий — вдвое."
+        en: "Very hot tea raises oesophageal cancer risk eightfold; merely hot tea doubles it."
+    - id: wait
+      text: {ru: "Ждать четыре минуты после заварки", en: "Wait four minutes after pouring"}
+      tag: wise
+      cost_will: 1
+      evidence: ch02_i30
+      outcome:
+        ru: "Выпитый раньше двух минут чай повышает риск впятеро по сравнению с подождавшими четыре."
+        en: "Tea drunk within two minutes carries five times the risk of tea left for four."
+
+- id: ch02_weight
+  title: {ru: "Минус пуговица", en: "One button too few"}
+  min_age: 28
+  max_age: 70
+  category: chronic
+  evidence: ch02_i32
+  requires: {conditions: [sedentary], not_conditions: [obese]}
+  narrative:
+    ru: |
+      Брюки не сходятся, на весах 98 килограммов при росте 175. Врач на медосмотре пишет:
+      «ИМТ 32. Ожирение I степени».
+    en: |
+      Your trousers won't close; the scales say 98 kg at 175 cm. The check-up doctor writes:
+      "BMI 32. Class I obesity."
+  choices:
+    - id: lose
+      text: {ru: "Меньше ультрапереработанной еды, больше ходьбы", en: "Less ultra-processed food, more walking"}
+      tag: wise
+      cost_will: 4
+      remove_conditions: [sedentary]
+      add_conditions: [active]
+      evidence: ch02_i32
+      outcome:
+        ru: "Минус 12 кг за год. Смертность минимальна при ИМТ 20–25."
+        en: "Twelve kilos down in a year. Mortality is lowest at BMI 20–25."
+    - id: accept
+      text: {ru: "Купить брюки на размер больше", en: "Buy trousers a size up"}
+      tag: risky
+      add_conditions: [obese]
+      evidence: ch02_i32
+      outcome:
+        ru: "При ИМТ 30–35 риск смерти примерно на 45% выше."
+        en: "At BMI 30–35 the risk of death is about 45% higher."
+      death_reasons:
+        cardiovascular: {ru: "Инфаркт на фоне ожирения и диабета", en: "A heart attack on top of obesity and diabetes"}
+
+- id: ch02_night_shift
+  title: {ru: "Ночная смена с надбавкой", en: "Night shift with a bonus"}
+  min_age: 20
+  max_age: 55
+  category: work
+  evidence: ch02_i39
+  requires: {not_conditions: [night_shift]}
+  narrative:
+    ru: |
+      Начальник предлагает перейти в ночную смену: плюс 30% к зарплате, днём свободен.
+      Ипотека сама себя не заплатит.
+    en: |
+      Your boss offers you the night shift: plus 30% pay and free days. The mortgage won't pay itself.
+  choices:
+    - id: accept
+      text: {ru: "Согласиться: деньги нужны", en: "Accept: you need the money"}
+      tag: risky
+      add_conditions: [night_shift]
+      set_flags: [night_shifts]
+      evidence: ch02_i39
+      outcome:
+        ru: "Деньги пошли. Сердечно-сосудистые смерти у работающих в ночь примерно на 27% чаще, и с каждым годом хуже."
+        en: "The money started coming in. Cardiovascular deaths are about 27% more common on night shifts, and it gets worse every year."
+      death_reasons:
+        cardiovascular: {ru: "Инфаркт после многих лет ночных смен", en: "A heart attack after years of night shifts"}
+    - id: decline
+      text: {ru: "Отказаться и искать подработку днём", en: "Decline and look for day-time side work"}
+      tag: wise
+      delta_sanity: -2
+      evidence: ch02_i39
+      outcome:
+        ru: "Денег меньше, сон на месте."
+        en: "Less money, but your sleep stays intact."
+
+- id: ch02_leave_nights
+  title: {ru: "Пятый год в ночь", en: "Five years of nights"}
+  min_age: 24
+  max_age: 64
+  category: work
+  weight: 1.5
+  evidence: ch02_i39
+  requires: {conditions: [night_shift], flag_years: {night_shifts: 4}}
+  narrative:
+    ru: |
+      Вы спите днём под шум перфоратора соседей и видите семью по выходным. Открылась вакансия
+      в дневную смену — на треть меньше денег.
+    en: |
+      You sleep through the neighbours' drilling and see your family at weekends. A day-shift
+      post opens up — a third less money.
+  choices:
+    - id: switch
+      text: {ru: "Перейти в дневную смену", en: "Move to the day shift"}
+      tag: wise
+      remove_conditions: [night_shift]
+      delta_sanity: 8
+      evidence: ch02_i39
+      outcome:
+        ru: "Каждые пять лишних ночных смен поднимают риск ещё на 7%. Вы вышли из этой гонки."
+        en: "Every additional five night shifts add another 7% to the risk. You stepped off that treadmill."
+    - id: stay
+      text: {ru: "Остаться: деньги решают", en: "Stay: money decides"}
+      tag: risky
+      evidence: ch02_i39
+      outcome:
+        ru: "Ещё год без солнца."
+        en: "Another year without sunlight."
+
+- id: ch02_stop_pills
+  title: {ru: "«Давление же нормальное»", en: "\"My pressure's normal now\""}
+  min_age: 36
+  max_age: 84
+  category: chronic
+  evidence: ch02_i12
+  requires: {conditions: [hypertension_treated]}
+  narrative:
+    ru: |
+      Полгода тонометр показывает 125/80. Таблетки кончились, а ехать за рецептом лень.
+      «Раз давление нормальное, зачем пить?»
+    en: |
+      For six months the cuff has shown 125/80. You've run out of pills and can't be bothered to
+      get a new prescription. "If my pressure's normal, why take them?"
+  choices:
+    - id: continue
+      text: {ru: "Продлить рецепт: нормально оно благодаря таблеткам", en: "Renew the prescription: it's normal because of the pills"}
+      tag: wise
+      cost_will: 1
+      evidence: ch16_i1
+      outcome:
+        ru: "Пьющие лекарство по схеме умирают на 30–45% реже тех, кто часто пропускает."
+        en: "People who take their medicine as directed die 30–45% less often than those who often skip doses."
+    - id: stop
+      text: {ru: "Бросить таблетки", en: "Stop the pills"}
+      tag: risky
+      remove_conditions: [hypertension_treated]
+      add_conditions: [hypertension]
+      evidence: ch02_i12
+      outcome:
+        ru: "Через месяц давление вернулось к 160. Вы этого не заметили — гипертония не болит."
+        en: "A month later your pressure was back at 160. You didn't notice — hypertension doesn't hurt."
+
+- id: ch02_badminton
+  title: {ru: "Клуб бадминтона", en: "The badminton club"}
+  min_age: 20
+  max_age: 70
+  category: chronic
+  evidence: ch02_i14
+  requires: {not_conditions: [racket_player]}
+  narrative:
+    ru: |
+      Бывший однокурсник зовёт в любительский клуб бадминтона: два вечера в неделю, абонемент
+      тысяча в месяц, после игры — пиво… или нет.
+    en: |
+      An old classmate invites you to an amateur badminton club: two evenings a week, a thousand
+      a month, and a beer afterwards… or not.
+  choices:
+    - id: join
+      text: {ru: "Записаться и ходить", en: "Sign up and keep going"}
+      tag: wise
+      cost_will: 2
+      cost_time: 150
+      add_conditions: [racket_player]
+      evidence: ch02_i14
+      outcome:
+        ru: "У играющих в ракеточные виды спорта смертность от болезней сердца примерно на 56% ниже."
+        en: "Racket-sport players have about 56% lower cardiovascular mortality."
+    - id: gym_contract
+      text: {ru: "Купить годовой абонемент в фитнес «с понедельника»", en: "Buy an annual gym pass \"starting Monday\""}
+      tag: neutral
+      cost_money: 35000
+      evidence: ch02_i16
+      outcome:
+        ru: "Вы сходили четыре раза. Абонемент окупился бы, если бы вы ходили."
+        en: "You went four times. The pass would have paid off if you had kept going."
+    - id: decline
+      text: {ru: "Некогда", en: "No time"}
+      tag: neutral
+      outcome:
+        ru: "Вечера остались на диване."
+        en: "The evenings stayed on the sofa."
+
+- id: ch02_strength
+  title: {ru: "Гантели под кроватью", en: "Dumbbells under the bed"}
+  min_age: 25
+  max_age: 80
+  category: chronic
+  evidence: ch02_i16
+  requires: {not_conditions: [strength_training, steroid_user]}
+  narrative:
+    ru: |
+      Подниматься с корточек стало тяжело, пакеты из магазина режут пальцы. Под кроватью пылятся
+      гантели, купленные три года назад.
+    en: |
+      Getting up from a squat has become hard and shopping bags cut into your fingers. Dumbbells
+      bought three years ago gather dust under the bed.
+  choices:
+    - id: train
+      text: {ru: "Два раза по полчаса в неделю", en: "Two half-hour sessions a week"}
+      tag: wise
+      cost_will: 2
+      cost_time: 50
+      add_conditions: [strength_training]
+      evidence: ch02_i16
+      outcome:
+        ru: "30–60 минут силовых в неделю дают на 10–20% меньший риск смерти. Больше — уже без доп. пользы."
+        en: "30–60 minutes of strength training a week means 10–20% lower risk of death. More brings no extra benefit."
+    - id: skip
+      text: {ru: "Подарить гантели племяннику", en: "Give the dumbbells to a nephew"}
+      tag: neutral
+      outcome:
+        ru: "Под кроватью стало просторнее."
+        en: "There's more room under the bed now."

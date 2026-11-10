@@ -1,0 +1,147 @@
+# Safety habits, debts and other lasting states from chapters 1, 5, 7, 8, 19, 29.
+
+- id: seatbelt
+  icon: "⛨"
+  kind: good
+  name: {ru: "Пристёгивается всегда", en: "Always buckles up"}
+  description:
+    ru: "Ремень спереди снижает риск гибели в аварии на 45%."
+    en: "A front seat belt cuts the risk of dying in a crash by 45%."
+  evidence: ch01_i1
+  # −45% for car occupants; occupant deaths ≈ 20% of injury deaths → 1-0.2×0.45 ≈ 0.91
+  modifiers: {trauma_accident_risk: 0.91}
+
+- id: no_seatbelt
+  icon: "⚠"
+  kind: bad
+  name: {ru: "Не пристёгивается", en: "Never buckles up"}
+  description:
+    ru: "«Да я недалеко». Каждая вторая жертва ДТП была не пристёгнута."
+    en: "\"It's just around the corner.\" Half of crash victims were unbelted."
+  evidence: ch01_i1
+  modifiers: {trauma_accident_risk: 1.1} # 1/0.91
+  death_reasons:
+    trauma: {ru: "Вылетел через лобовое стекло: не был пристёгнут", en: "Thrown through the windscreen: not wearing a seat belt"}
+
+- id: rider_helmet
+  icon: "⛑"
+  kind: neutral
+  name: {ru: "Мотоцикл и шлем", en: "Motorbike, helmet on"}
+  description:
+    ru: "Ездите на мотоцикле, шлем застёгнут."
+    en: "You ride a motorbike with the helmet strapped."
+  evidence: ch01_i2
+  # riding itself: game approximation ×1.25 on injuries
+  modifiers: {trauma_accident_risk: 1.25}
+
+- id: rider_no_helmet
+  icon: "☠"
+  kind: bad
+  name: {ru: "Мотоцикл без шлема", en: "Motorbike, no helmet"}
+  description:
+    ru: "Шлем висит на руле. Без шлема гибель при аварии примерно в 1,7 раза вероятнее."
+    en: "The helmet hangs on the handlebar. Without it, death in a crash is about 1.7 times as likely."
+  evidence: ch01_i2
+  # OR 0.58 for death with a helmet → 1.25 / 0.58 ≈ 2.15
+  modifiers: {trauma_accident_risk: 2.15}
+  death_reasons:
+    trauma: {ru: "Черепно-мозговая травма: мотоцикл, шлем не надет", en: "Head injury: motorbike crash without a helmet"}
+
+- id: gambler
+  icon: "♣"
+  kind: bad
+  name: {ru: "Игровая зависимость", en: "Gambling problem"}
+  description:
+    ru: "Ставки ночью, долги днём. Риск самоубийства у таких игроков в 15 раз выше."
+    en: "Bets at night, debts by day. Suicide risk for such gamblers is fifteen times higher."
+  evidence: ch01_i37
+  per_year: {delta_sanity: -10, delta_wealth: -90000}
+
+- id: microloan_debt
+  icon: "₽"
+  kind: bad
+  name: {ru: "Долги по микрозаймам", en: "Payday-loan debt"}
+  description:
+    ru: "Займ на займ, проценты капают каждый день, коллекторы звонят родителям."
+    en: "Loan on loan, interest every day, collectors calling your parents."
+  evidence: ch07_i23
+  per_year: {delta_sanity: -8, delta_wealth: -70000}
+
+- id: emergency_fund
+  icon: "▣"
+  kind: good
+  name: {ru: "Подушка безопасности", en: "Emergency fund"}
+  description:
+    ru: "3–6 месяцев расходов на отдельном счёте: болезнь или увольнение не загонят в долги под 18%."
+    en: "Three to six months of expenses set aside: illness or a layoff won't push you into 18% debt."
+  evidence: ch05_i27
+  per_year: {delta_sanity: 2}
+
+- id: index_investor
+  icon: "↗"
+  kind: good
+  name: {ru: "Индексный фонд", en: "Index fund investor"}
+  description:
+    ru: "Широкий рынок, низкие комиссии, никаких «гарантированных» доходностей."
+    en: "Broad market, low fees, no \"guaranteed\" returns."
+  evidence: ch05_i17
+  per_year: {delta_wealth: 25000}
+
+- id: dust_job
+  icon: "▒"
+  kind: bad
+  name: {ru: "Пыль без защиты", en: "Dust without protection"}
+  description:
+    ru: "Пыль и шум без респиратора: пневмокониоз и тугоухость необратимы."
+    en: "Dust and noise without a respirator: pneumoconiosis and deafness are irreversible."
+  evidence: ch19_i10
+  per_year: {delta_health: -3, delta_wealth: 30000}
+
+- id: bullied
+  icon: "✕"
+  kind: bad
+  name: {ru: "Травля на работе", en: "Bullied at work"}
+  description:
+    ru: "Через годы у жертв травли риск инфаркта и инсульта примерно на 60% выше."
+    en: "Years later, bullying victims have about 60% higher risk of heart disease and stroke."
+  evidence: ch19_i16
+  modifiers: {cardiovascular_risk: 1.59} # HR 1.59 for cardiovascular disease
+  per_year: {delta_sanity: -8}
+
+- id: married
+  icon: "⚭"
+  kind: good
+  name: {ru: "В браке", en: "Married"}
+  description:
+    ru: "Женатые умирают примерно на 12% реже — но это наблюдение, а не доказанная причина."
+    en: "Married people die about 12% less often — an association, not proven cause."
+  evidence: ch10_i8
+  # RR 0.88, discounted as observational → 0.94 on the two big groups
+  modifiers: {cardiovascular_risk: 0.94, oncology_risk: 0.97}
+  per_year: {delta_sanity: 2}
+
+- id: cancer_treated
+  icon: "✚"
+  kind: bad
+  name: {ru: "Рак: стандартное лечение", en: "Cancer: standard treatment"}
+  description:
+    ru: "Операция, химиотерапия, контроль. Пять тяжёлых лет."
+    en: "Surgery, chemotherapy, follow-ups. Five hard years."
+  evidence: ch16_i4
+  years: 5
+  modifiers: {oncology_risk: 3.0} # game approximation for a treated, curable cancer
+  per_year: {delta_health: -4, delta_sanity: -4}
+
+- id: cancer_alternative
+  icon: "✚"
+  kind: bad
+  name: {ru: "Рак: «народное» лечение", en: "Cancer: alternative remedies only"}
+  description:
+    ru: "Вместо лечения — травы и БАДы. Риск смерти в 2,5 раза выше, чем при стандартном лечении."
+    en: "Herbs and supplements instead of treatment. Two and a half times the risk of death of standard care."
+  evidence: ch16_i4
+  years: 5
+  modifiers: {oncology_risk: 7.5} # HR 2.50 relative to standard treatment: 3.0 × 2.5
+  per_year: {delta_health: -6, delta_sanity: -2}
+  death_reasons:
+    oncology: {ru: "Излечимый рак, который лечили травами", en: "A curable cancer treated with herbs"}

@@ -1,0 +1,317 @@
+# Chapter 34 — "Do not let medicines kept at home cause serious harm",
+# plus chapter 16 (living with chronic disease) and chapter 24 (seeing a doctor).
+
+- id: ch34_paracetamol_combo
+  title: {ru: "Простуда и температура 39°C", en: "A cold and a 39°C fever"}
+  min_age: 18
+  max_age: 70
+  category: pharmacy
+  weight: 1.5
+  evidence: ch34_i1
+  narrative:
+    ru: |
+      Вы свалились с тяжёлым ОРВИ. Раскалывается голова, температура 39°C. В аптечке лежит
+      пакетик «Терафлю» и пачка таблеток парацетамола по 500 мг. Завтра важная встреча.
+    en: |
+      You're down with a bad flu. Your head is splitting and the thermometer says 39°C. The
+      medicine cabinet holds a sachet of a hot lemon cold remedy and a strip of 500 mg
+      paracetamol tablets. There's an important meeting tomorrow.
+  choices:
+    - id: combine
+      text: {ru: "Выпить «Терафлю» и запить двумя таблетками парацетамола — чтоб наверняка", en: "Drink the sachet and take two paracetamol on top — to be sure"}
+      tag: risky
+      delta_health: -30
+      stat_effects:
+        toxicology_liver_risk: {factor: 2.0, years: 3} # game approximation: liver injury takes years to settle
+      instant_death_check:
+        chance: 0.01 # game approximation; double paracetamol dosing (ch34_i1)
+        scale_by: [toxicology_liver_risk]
+        cause: liver
+        death_reason:
+          ru: "Острая печёночная недостаточность из-за сочетания «Терафлю» и парацетамола"
+          en: "Acute liver failure from combining a paracetamol cold remedy with paracetamol tablets"
+        evidence: ch34_i1
+      evidence: ch34_i1
+      outcome:
+        ru: "Через два дня — желтизна, анализы, токсикология. В «Терафлю» уже был парацетамол: вы выпили двойную дозу."
+        en: "Two days later: yellow skin, blood tests, toxicology. The sachet already contained paracetamol: you took a double dose."
+      death_reasons:
+        liver: {ru: "Цирроз после лекарственного поражения печени", en: "Cirrhosis after drug-induced liver injury"}
+    - id: read_label
+      text: {ru: "Прочитать состав, увидеть там парацетамол и выпить что-то одно", en: "Read the label, spot the paracetamol in it and take only one"}
+      tag: wise
+      cost_will: 1
+      delta_health: 5
+      evidence: ch34_i1
+      outcome:
+        ru: "В «Терафлю» уже есть парацетамол. Вы выпили только пакетик и проспали до утра."
+        en: "The sachet contained paracetamol. You took only that and slept until morning."
+    - id: with_beer
+      text: {ru: "Только таблетки — и пиво, чтобы пропотеть", en: "Just the tablets — plus a beer to sweat it out"}
+      tag: risky
+      delta_health: -10
+      stat_effects:
+        toxicology_liver_risk: {factor: 1.4, years: 2} # game approximation; alcohol with paracetamol is a US label warning (ch34_i1)
+      evidence: ch34_i1
+      outcome:
+        ru: "Наутро хуже, чем до лечения. Алкоголь вместе с парацетамолом — отдельное предупреждение на американских упаковках."
+        en: "You felt worse in the morning than before. Alcohol with paracetamol carries its own warning on US packs."
+
+- id: ch34_antibiotics
+  title: {ru: "«Выпишите антибиотик»", en: "\"Just give me antibiotics\""}
+  min_age: 18
+  max_age: 84
+  category: pharmacy
+  evidence: ch34_i7
+  narrative:
+    ru: |
+      Насморк и горло пятый день. Вы приходите к терапевту с готовым решением: «Мне всегда
+      помогает амоксициллин, выпишите, пожалуйста».
+    en: |
+      Day five of a runny nose and sore throat. You walk into the GP's office with your mind
+      made up: "Amoxicillin always works for me, please prescribe it."
+  choices:
+    - id: insist
+      text: {ru: "Настоять и купить антибиотик", en: "Insist and buy the antibiotic"}
+      tag: risky
+      cost_money: 900
+      delta_health: -6
+      evidence: ch34_i7
+      outcome:
+        ru: "Простуда прошла за те же семь дней, зато прибавились понос и сыпь. Побочек у взрослых вдвое больше."
+        en: "The cold lasted the same seven days, plus diarrhoea and a rash. Adults get more than twice the side effects."
+    - id: rest
+      text: {ru: "Послушать врача: питьё, отдых, ждать", en: "Listen to the doctor: fluids, rest, wait"}
+      tag: wise
+      cost_will: 1
+      delta_health: 3
+      evidence: ch34_i7
+      outcome:
+        ru: "Антибиотики при простуде не ускоряют выздоровление. Через неделю вы были здоровы."
+        en: "Antibiotics don't speed up recovery from a cold. A week later you were fine."
+
+- id: ch34_nsaids
+  title: {ru: "Колено ноет каждый день", en: "A knee that aches every day"}
+  min_age: 60
+  max_age: 84
+  category: pharmacy
+  evidence: ch34_i3
+  narrative:
+    ru: |
+      Колено болит на каждой ступеньке. Соседка советует пить ибупрофен «курсом, каждый день,
+      как витамины». Вы ещё и аспирин для сердца принимаете.
+    en: |
+      Your knee hurts on every step. A neighbour suggests taking ibuprofen "as a course, every
+      day, like vitamins". You also take aspirin for your heart.
+  choices:
+    - id: daily
+      text: {ru: "Пить ибупрофен каждый день, без врача", en: "Take ibuprofen daily, no doctor"}
+      tag: risky
+      delta_sanity: 5
+      # RR 3.97 for stomach bleeding or perforation; GI bleeding ≈ 15% of
+      # digestive deaths at this age → 1 + 0.15×2.97 ≈ 1.45
+      stat_effects: {toxicology_liver_risk: 1.45}
+      instant_death_check:
+        chance: 0.005 # game approximation
+        scale_by: [toxicology_liver_risk]
+        cause: liver
+        death_reason: {ru: "Желудочное кровотечение на фоне ибупрофена и аспирина", en: "Stomach bleeding from ibuprofen on top of aspirin"}
+        evidence: ch34_i3
+      evidence: ch34_i3
+      outcome:
+        ru: "Колено отпустило. На высоких дозах риск кровотечения или прободения желудка примерно вчетверо выше."
+        en: "The knee eased. At high doses the risk of stomach bleeding or perforation is about four times higher."
+      death_reasons:
+        liver: {ru: "Прободная язва желудка от обезболивающих", en: "A perforated stomach ulcer from painkillers"}
+    - id: doctor
+      text: {ru: "Сходить к врачу: ЛФК, мази, защита желудка", en: "See a doctor: physio, gels, stomach protection"}
+      tag: wise
+      cost_money: 5000
+      cost_will: 2
+      evidence: ch34_i3
+      outcome:
+        ru: "Врач убрал лишнее, добавил упражнения. Болит меньше, желудок цел."
+        en: "The doctor dropped what was risky and added exercises. Less pain, intact stomach."
+
+- id: ch34_metronidazole
+  title: {ru: "Тост на дне рождения", en: "A birthday toast"}
+  min_age: 18
+  max_age: 75
+  category: pharmacy
+  evidence: ch34_i11
+  narrative:
+    ru: |
+      Вы третий день пьёте метронидазол, а у лучшего друга юбилей. Все поднимают бокалы и
+      смотрят на вас: «Ну хоть один!»
+    en: |
+      You're on day three of metronidazole, and it's your best friend's big birthday. Everyone
+      raises a glass and looks at you: "Just one!"
+  choices:
+    - id: drink
+      text: {ru: "Один бокал не повредит", en: "One glass won't hurt"}
+      tag: risky
+      delta_health: -15
+      delta_sanity: -5
+      evidence: ch34_i11
+      outcome:
+        ru: "Лицо вспыхнуло, сердце заколотилось, давление рухнуло. Остаток вечера вы провели на полу в ванной."
+        en: "Your face flushed, your heart raced, your blood pressure dropped. You spent the rest of the night on the bathroom floor."
+    - id: juice
+      text: {ru: "Сок. И объяснить, почему", en: "Juice. And explain why"}
+      tag: wise
+      cost_will: 1
+      evidence: ch34_i11
+      outcome:
+        ru: "Нельзя ни капли — ни во время курса, ни 7 дней после. Даже сиропы на спирту."
+        en: "Not a drop — during the course or for seven days after. Not even alcohol-based syrups."
+
+- id: ch34_drowsy_driving
+  title: {ru: "Таблетка от аллергии и руль", en: "An allergy pill and the wheel"}
+  min_age: 18
+  max_age: 75
+  category: pharmacy
+  evidence: ch34_i12
+  narrative:
+    ru: |
+      Утром вы выпили «порошок от простуды» с хлорфенамином. Теперь надо ехать на машине за
+      город. Вы чувствуете себя нормально — просто чуть вялым.
+    en: |
+      This morning you took a cold powder containing chlorphenamine. Now you need to drive out
+      of town. You feel fine — just a bit sluggish.
+  choices:
+    - id: drive
+      text: {ru: "Ехать: я же не пьяный", en: "Drive: I'm not drunk"}
+      tag: risky
+      instant_death_check:
+        chance: 0.005 # game approximation; on a simulator, diphenhydramine impaired driving more than alcohol (ch34_i12)
+        scale_by: [trauma_accident_risk]
+        cause: trauma
+        death_reason: {ru: "ДТП после приёма антигистаминного препарата", en: "A road crash after taking a sedating antihistamine"}
+        evidence: ch34_i12
+      evidence: ch34_i12
+      outcome:
+        ru: "На трассе вы дважды проскочили свой съезд. На симуляторе приняв дифенгидрамин водили хуже выпивших."
+        en: "You missed your exit twice. On a simulator, people on diphenhydramine drove worse than drunk ones."
+    - id: bus
+      text: {ru: "Поехать на электричке", en: "Take the train"}
+      tag: wise
+      cost_money: 400
+      evidence: ch34_i12
+      outcome:
+        ru: "Вы проспали в электричке всю дорогу. За рулём это было бы хуже."
+        en: "You slept the whole way on the train. At the wheel it would have been worse."
+
+- id: ch34_painkiller_overuse
+  title: {ru: "Голова болит каждый день", en: "A headache every day"}
+  min_age: 25
+  max_age: 70
+  category: pharmacy
+  evidence: ch34_i9
+  narrative:
+    ru: |
+      Третий месяц голова болит почти каждый день, и почти каждый день вы пьёте таблетку
+      цитрамона. Пачки уходят как семечки.
+    en: |
+      For three months your head has hurt almost every day, and almost every day you take a
+      combination painkiller. The packs go like sunflower seeds.
+  choices:
+    - id: neuro
+      text: {ru: "Пойти к неврологу", en: "See a neurologist"}
+      tag: wise
+      cost_money: 4000
+      cost_will: 2
+      delta_sanity: 10
+      evidence: ch34_i9
+      outcome:
+        ru: "Диагноз — лекарственно-индуцированная головная боль: болела от самих таблеток. Отмена — и через месяц легче."
+        en: "Diagnosis: medication-overuse headache — the pills themselves caused it. You stopped, and a month later it eased."
+    - id: more
+      text: {ru: "Купить упаковку побольше", en: "Buy a bigger pack"}
+      tag: risky
+      delta_sanity: -10
+      delta_health: -5
+      evidence: ch34_i9
+      outcome:
+        ru: "Чем больше таблеток, тем чаще боль. Порочный круг."
+        en: "The more pills, the more pain. A vicious circle."
+
+- id: ch16_cancer
+  title: {ru: "Диагноз", en: "The diagnosis"}
+  min_age: 40
+  max_age: 80
+  category: health
+  weight: 0.5
+  weight_by: {oncology_risk: 1.5}
+  evidence: ch16_i4
+  requires: {not_conditions: [cancer_treated, cancer_alternative]}
+  narrative:
+    ru: |
+      Онколог говорит спокойно: опухоль обнаружена на ранней стадии, операция и химиотерапия
+      дают хорошие шансы. Тётя присылает ссылку на «травника, который вылечил сотни людей».
+    en: |
+      The oncologist speaks calmly: the tumour was caught early; surgery and chemotherapy give
+      good odds. Your aunt sends a link to "a herbalist who has cured hundreds".
+  choices:
+    - id: standard
+      text: {ru: "Лечиться по стандарту, ничего не бросая", en: "Follow standard treatment and don't drop any of it"}
+      tag: wise
+      cost_money: 150000
+      cost_will: 3
+      add_conditions: [cancer_treated]
+      delta_health: -15
+      evidence: ch16_i4
+      outcome:
+        ru: "Тяжёлый год. Но стандартное лечение — это то, что работает."
+        en: "A hard year. But standard treatment is what works."
+    - id: herbs
+      text: {ru: "Отказаться от «химии» и ехать к травнику", en: "Refuse \"chemo\" and go to the herbalist"}
+      tag: risky
+      cost_money: 120000
+      add_conditions: [cancer_alternative]
+      evidence: ch16_i4
+      outcome:
+        ru: "Травник берёт деньги вперёд. Только альтернативное лечение — в 2,5 раза выше риск смерти."
+        en: "The herbalist takes the money up front. Alternative therapy alone means 2.5 times the risk of death."
+    - id: both
+      text: {ru: "Лечиться и параллельно пить травы «для поддержки»", en: "Get treated and take herbs \"for support\" on the side"}
+      tag: neutral
+      cost_money: 170000
+      cost_will: 2
+      add_conditions: [cancer_treated]
+      stat_effects: {oncology_risk: {factor: 1.2, years: 5}} # game approximation: complementary users more often refuse parts of treatment (ch16_i4)
+      delta_health: -15
+      evidence: ch16_i4
+      outcome:
+        ru: "Онколог нахмурился, услышав про травы: часть из них ослабляет другие лекарства."
+        en: "The oncologist frowned at the herbs: some of them weaken other drugs."
+
+- id: ch24_er_triage
+  title: {ru: "Очередь в регистратуру", en: "The registration queue"}
+  min_age: 18
+  max_age: 84
+  category: health
+  evidence: ch24_i7
+  narrative:
+    ru: |
+      У вас резкая боль в животе справа, температура, тошнота. Перед окошком регистратуры
+      приёмного отделения — двадцать человек.
+    en: |
+      Sharp pain on the right side of your belly, fever, nausea. Twenty people stand in front of
+      the emergency registration window.
+  choices:
+    - id: triage
+      text: {ru: "Сразу к сортировочному посту: «очень сильная боль, температура»", en: "Go straight to the triage desk: \"severe pain, fever\""}
+      tag: wise
+      delta_health: -8
+      evidence: ch24_i7
+      outcome:
+        ru: "Через 20 минут УЗИ, через два часа — операция по поводу аппендицита. Приёмное отделение работает не по очереди, а по тяжести."
+        en: "An ultrasound in twenty minutes, appendix surgery two hours later. Emergency care goes by severity, not by arrival."
+    - id: queue
+      text: {ru: "Стоять в очереди, как все", en: "Wait in line like everyone else"}
+      tag: risky
+      delta_health: -25
+      evidence: ch24_i7
+      outcome:
+        ru: "Через три часа аппендикс лопнул. Перитонит, две недели в больнице."
+        en: "Three hours later your appendix burst. Peritonitis and two weeks in hospital."

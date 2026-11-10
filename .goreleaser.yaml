@@ -1,0 +1,76 @@
+# GoReleaser v2 — static Linux binaries (x86_64, arm64, armv7) plus macOS,
+# archives, checksums and native packages. Run `make snapshot` to test locally.
+version: 2
+
+project_name: survive85
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+
+builds:
+  - id: survive85
+    main: ./cmd/survive85
+    binary: survive85
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{ .Version }} -X main.commit={{ .ShortCommit }} -X main.date={{ .Date }}
+    goos: [linux, darwin]
+    goarch: [amd64, arm64, arm]
+    goarm: ["7"]
+    ignore:
+      - goos: darwin
+        goarch: arm
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}
+    files:
+      - LICENSE
+      - NOTICE
+      - README.md
+      - README.ru.md
+      - data/LICENSE.md
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+nfpms:
+  - id: packages
+    package_name: survive85
+    vendor: funstorm15
+    homepage: https://github.com/funstorm15/survive85
+    maintainer: funstorm15 <funstorm15@users.noreply.github.com>
+    description: Turn-based terminal roguelike — live from 18 to 85 on real hazard ratios.
+    license: MIT AND CC-BY-4.0
+    formats: [deb, rpm, apk, archlinux]
+    bindir: /usr/bin
+    contents:
+      - src: LICENSE
+        dst: /usr/share/licenses/survive85/LICENSE
+      - src: data/LICENSE.md
+        dst: /usr/share/licenses/survive85/DATA-LICENSE.md
+      - src: README.md
+        dst: /usr/share/doc/survive85/README.md
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+
+release:
+  github:
+    owner: funstorm15
+    name: survive85
+  draft: false
+  prerelease: auto
